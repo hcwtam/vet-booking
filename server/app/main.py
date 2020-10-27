@@ -106,28 +106,29 @@ class TimeSlot(db.Model):
     end_time = db.Column(db.DateTime, nullable=False)
     booking = db.relationship('Booking', backref='time_slot', lazy=True)
 
-# def token_required(f):
-#     @wraps(f)
-#     def decorated(*args, **kwargs):
-#         token = None
-#
-#         if 'x-access-token' in request.headers:
-#             token = request.headers['x-access-token']
-#
-#         if not token:
-#             return jsonify({'message': 'Token is missing!'}), 401
-#
-#         try:
-#             data = jwt.decode(token, app.config['SECRET_KEY'])
-#             current_user = User.query.filter_by(public_id=data['public_id']).first()
-#         except:
-#             return jsonify({'message': 'Token is invalid!'}), 401
-#
-#         return f(current_user, *args, **kwargs)
-#
-#     return decorated
-#
-#
+
+def token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = None
+
+        if 'x-access-token' in request.headers:
+            token = request.headers['x-access-token']
+
+        if not token:
+            return jsonify({'message': 'Token is missing!'}), 401
+
+        try:
+            data = jwt.decode(token, app.config['SECRET_KEY'])
+            current_user = User.query.filter_by(id=data['id']).first()
+        except current_user is None:
+            return jsonify({'message': 'Token is invalid!'}), 401
+
+        return f(current_user, *args, **kwargs)
+
+    return decorated
+
+
 # @app.route('/user', methods=['GET'])
 # @token_required
 # def get_all_users(current_user):
