@@ -1,7 +1,6 @@
 # User routes
 import datetime
 import os
-
 import jwt
 from flask import Blueprint, jsonify, request, make_response, current_app as app
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -60,7 +59,7 @@ def login():
 # update user detail
 @user_bp.route('/<uid>', methods=['PUT'])
 @token_required
-def change_user_detail(current_user, uid):
+def change_user_detail(_, uid):
     user = User.query.filter_by(uid=uid).first()
 
     if not user:
@@ -78,7 +77,7 @@ def change_user_detail(current_user, uid):
 # get user detail
 @user_bp.route('/<uid>', methods=['GET'])
 @token_required
-def get_one_user(current_user, uid):
+def get_one_user(_, uid):
     user = User.query.filter_by(uid=uid).first()
 
     if not user:
@@ -143,3 +142,5 @@ def delete_user(current_user, public_id):
     db.session.commit()
 
     return jsonify({'message': 'The user has been deleted!'})
+
+

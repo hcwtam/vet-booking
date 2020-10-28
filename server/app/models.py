@@ -68,12 +68,15 @@ class Pet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
     animal_id = db.Column(db.Integer, db.ForeignKey('animal_type.id'), nullable=False)
-    last_login = db.Column(db.DateTime, nullable=False)
+    birth_date = db.Column(db.DateTime)
     gender = db.Column(db.String(6), nullable=False)
     illness_id = db.Column(db.Integer, db.ForeignKey('illness.id'), nullable=False)
     desexed = db.Column(db.Boolean, nullable=False)
     owner_id = db.Column(db.Integer, db.ForeignKey('pet_owner.id'), nullable=False)
     bookings = db.relationship('Booking', backref='pet', lazy=True)
+
+    def __repr__(self):
+        return '<Pet {}>'.format(self.name)
 
 
 class Illness(db.Model):
