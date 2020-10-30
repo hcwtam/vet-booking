@@ -1,7 +1,9 @@
 import React, { ReactElement } from 'react';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
+
+import { login } from '../utils/auth';
 
 type FormData = {
   username: string;
@@ -9,6 +11,8 @@ type FormData = {
 };
 
 export default function Login(): ReactElement {
+  const history = useHistory();
+
   const initialValues = {
     username: '',
     password: ''
@@ -21,6 +25,8 @@ export default function Login(): ReactElement {
 
   const onSubmit = async (values: FormData) => {
     console.log('form data', values);
+    login(values);
+    history.push('/');
   };
 
   return (

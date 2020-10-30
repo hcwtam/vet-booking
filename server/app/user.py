@@ -1,6 +1,8 @@
 # User routes
 import datetime
 import os
+
+import flask_cors
 import jwt
 from flask import Blueprint, jsonify, request, make_response, current_app as app
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -11,6 +13,7 @@ from app.helper import token_required
 from app.models import User
 
 user_bp = Blueprint('user_api', __name__, url_prefix='/user')
+flask_cors.CORS(user_bp)
 
 
 # Create account
@@ -34,19 +37,19 @@ def create_user():
 
 
 # login
-@user_bp.route('/login')
+@user_bp.route('/login', methods=['POST'])
 def login():
-    auth = request.authorization
+    auth = request.get_json()
 
-    if not auth or not auth.username or not auth.password:
+    if not auth or not auth['username'] or not auth['password']:
         return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
 
-    user = User.query.filter_by(username=auth.username).first()
+    user = User.query.filter_by(username=auth['username']).first()
 
     if not user:
         return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
 
-    if check_password_hash(user.password, auth.password):
+    if check_password_hash(user.password, auth['password']):
         token = jwt.encode(
             {'uid': user.uid, 'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)},
             os.environ.get("SECRET_KEY"))

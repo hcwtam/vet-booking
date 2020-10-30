@@ -1,12 +1,24 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter } from 'react-router-dom';
+import { SWRConfig } from 'swr';
+
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { AuthProvider } from './store/auth';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <AuthProvider>
+      <SWRConfig
+        value={{ fetcher: (url) => fetch(url).then((res) => res.json()) }}
+      >
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </SWRConfig>
+    </AuthProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

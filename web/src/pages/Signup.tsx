@@ -28,6 +28,7 @@ export default function Signup(): ReactElement {
   });
 
   const onSubmit = async (values: FormData) => {
+    console.log('form data', values);
     history.push('/');
   };
 
