@@ -24,16 +24,22 @@ def create_user():
     hashed_password = generate_password_hash(data['password'], method='sha256')
 
     new_user = User(uid=str(uuid.uuid4()),
-                    first_name=data['first_name'],
-                    last_name=data['last_name'],
+                    first_name=data['firstName'],
+                    last_name=data['lastName'],
                     email=data['email'],
                     username=data['username'],
                     password=hashed_password,
-                    user_type=data['user_type'])
+                    user_type=data['userType'])
     db.session.add(new_user)
     db.session.commit()
 
-    return jsonify({'message': 'New user created!'})
+    user = User.query.filter_by(username=data['username']).first()
+
+    token = jwt.encode(
+        {'uid': user.uid, 'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)},
+        os.environ.get("SECRET_KEY"))
+
+    return jsonify({'token': token.decode('UTF-8'), 'message': 'New user created!'})
 
 
 # login

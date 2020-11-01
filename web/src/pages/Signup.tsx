@@ -2,33 +2,32 @@ import React, { ReactElement } from 'react';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { Link, useHistory } from 'react-router-dom';
-
-type FormData = {
-  email: string;
-  fullName: string;
-  password: string;
-  username: string;
-};
+import { signup, SignupFormData } from '../utils/auth';
 
 export default function Signup(): ReactElement {
   const history = useHistory();
 
   const initialValues = {
+    firstName: '',
+    lastName: '',
     email: '',
-    fullName: '',
     username: '',
-    password: ''
+    password: '',
+    userType: 'owner'
   };
 
   const validationSchema = Yup.object({
+    firstName: Yup.string().required('Required'),
+    lastName: Yup.string().required('Required'),
     email: Yup.string().email('Invalid email format').required('Required'),
-    fullName: Yup.string().required('Required'),
     username: Yup.string().required('Required'),
-    password: Yup.string().required('Required')
+    password: Yup.string().required('Required'),
+    userType: Yup.string().required('Required')
   });
 
-  const onSubmit = async (values: FormData) => {
-    console.log('form data', values);
+  const onSubmit = async (values: SignupFormData) => {
+    console.log('Signup form data', values);
+    signup(values);
     history.push('/');
   };
 
@@ -46,16 +45,22 @@ export default function Signup(): ReactElement {
             return (
               <Form>
                 <Field
+                  type="text"
+                  label="First name"
+                  name="firstName"
+                  placeholder="First Name"
+                />
+                <Field
+                  type="text"
+                  label="Last name"
+                  name="lastName"
+                  placeholder="Last Name"
+                />
+                <Field
                   type="email"
                   label="Email"
                   name="email"
                   placeholder="Email"
-                />
-                <Field
-                  type="text"
-                  label="Full name"
-                  name="fullName"
-                  placeholder="Full Name"
                 />
                 <Field
                   type="text"

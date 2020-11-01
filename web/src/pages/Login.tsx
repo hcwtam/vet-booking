@@ -1,17 +1,14 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useContext } from 'react';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { Link, useHistory } from 'react-router-dom';
 
-import { login } from '../utils/auth';
-
-type FormData = {
-  username: string;
-  password: string;
-};
+import { login, LoginFormData } from '../utils/auth';
+import { authContext } from '../store/auth';
 
 export default function Login(): ReactElement {
   const history = useHistory();
+  const { setToken } = useContext(authContext);
 
   const initialValues = {
     username: '',
@@ -23,10 +20,15 @@ export default function Login(): ReactElement {
     password: Yup.string().required('Required')
   });
 
-  const onSubmit = async (values: FormData) => {
-    console.log('form data', values);
-    login(values);
-    history.push('/');
+  const onSubmit = async (values: LoginFormData) => {
+    console.log('Login form data', values);
+    const token = await login(values);
+    if (token) {
+      setToken(token);
+      history.push('/profile');
+    } else {
+      history.push('/');
+    }
   };
 
   return (

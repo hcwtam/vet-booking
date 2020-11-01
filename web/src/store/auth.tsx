@@ -9,7 +9,10 @@ interface ContextProps {
   setToken: React.Dispatch<React.SetStateAction<string | void | null>>;
 }
 
-const authContext = createContext<ContextProps | null>(null);
+const authContext = createContext<ContextProps>({
+  token: '',
+  setToken: () => null
+});
 const { Provider } = authContext;
 
 function AuthProvider({ children }: Props): ReactElement {

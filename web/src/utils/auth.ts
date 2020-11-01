@@ -1,10 +1,17 @@
 import axios from './axiosInstance';
 
-type FormData = {
-  email?: string;
-  fullName?: string;
+export type LoginFormData = {
   username: string;
   password: string;
+};
+
+export type SignupFormData = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  username: string;
+  password: string;
+  userType: string;
 };
 
 export interface UserData {
@@ -21,7 +28,7 @@ export interface UserData {
   avatarUrl?: string;
 }
 
-export const login = async (values: FormData) => {
+export const login = async (values: LoginFormData) => {
   return axios
     .post(`/user/login`, {
       ...values
@@ -33,7 +40,6 @@ export const login = async (values: FormData) => {
 
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('expirationDate', expirationDate);
-      console.log(res.data.token);
 
       return res.data.token;
     })
@@ -43,39 +49,21 @@ export const login = async (values: FormData) => {
     });
 };
 
-export const signup = async (values: FormData) => {
-  const { email, fullName, username } = values;
-
+export const signup = async (values: SignupFormData) => {
   return axios
-    .post(`https://${process.env.API_ENDPOINT}`, {
-      ...values,
-      returnSecureToken: true
+    .post(`/user`, {
+      ...values
     })
     .then((res) => {
       console.log(res);
       const expirationDate = (Date.now() * 30 * 60 * 1000) // from now to 30 minutes later
         .toString();
 
-      localStorage.setItem('token', res.data.idToken);
+      localStorage.setItem('token', res.data.token);
       localStorage.setItem('expirationDate', expirationDate);
-
-      return axios
-        .post(`https://reactgram-ac3b0.firebaseio.com/users.json`, {
-          email,
-          fullName,
-          username
-        })
-        .then((r) => {
-          console.log([res.data.idToken]);
-          return [res.data.idToken];
-        })
-        .catch((err) => {
-          console.log(err.response.data.error.message);
-          return null;
-        });
     })
     .catch((err) => {
-      console.log(err.response.data.error.message);
+      console.log(err);
       return null;
     });
 };
