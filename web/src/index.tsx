@@ -7,12 +7,20 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { AuthProvider } from './store/auth';
+import axios from './utils/axiosInstance';
 
 ReactDOM.render(
   <React.StrictMode>
     <AuthProvider>
       <SWRConfig
-        value={{ fetcher: (url) => fetch(url).then((res) => res.json()) }}
+        value={{
+          fetcher: (token) =>
+            axios.get('user/profile', {
+              headers: {
+                'x-access-token': token
+              }
+            })
+        }}
       >
         <BrowserRouter>
           <App />

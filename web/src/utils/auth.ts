@@ -14,6 +14,11 @@ export type SignupFormData = {
   userType: string;
 };
 
+export type SettingsData = {
+  firstName: string;
+  lastName: string;
+};
+
 export interface UserData {
   email: string;
   fullName: string;
@@ -30,11 +35,10 @@ export interface UserData {
 
 export const login = async (values: LoginFormData) => {
   return axios
-    .post(`/user/login`, {
+    .post('/user/login', {
       ...values
     })
     .then((res) => {
-      // console.log(res);
       const expirationDate = (Date.now() * 30 * 60 * 1000) // from now to 30 minutes later
         .toString();
 
@@ -51,7 +55,7 @@ export const login = async (values: LoginFormData) => {
 
 export const signup = async (values: SignupFormData) => {
   return axios
-    .post(`/user`, {
+    .post('/user', {
       ...values
     })
     .then((res) => {
@@ -61,6 +65,19 @@ export const signup = async (values: SignupFormData) => {
 
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('expirationDate', expirationDate);
+    })
+    .catch((err) => {
+      console.log(err);
+      return null;
+    });
+};
+
+export const changeUserInfo = async (values: SettingsData, token: string) => {
+  return axios
+    .put('/user/profile', values, {
+      headers: {
+        'x-access-token': token
+      }
     })
     .catch((err) => {
       console.log(err);

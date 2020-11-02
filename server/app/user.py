@@ -65,39 +65,39 @@ def login():
     return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
 
 
-# update user detail
-@user_bp.route('/<uid>', methods=['PUT'])
+# update user profile
+@user_bp.route('/profile', methods=['PUT'])
 @token_required
-def change_user_detail(_, uid):
-    user = User.query.filter_by(uid=uid).first()
+def change_user_detail(current_user):
+    user = User.query.filter_by(uid=current_user.uid).first()
 
     if not user:
         return jsonify({'message': 'No user found!'})
 
     data = request.get_json()
 
-    user.first_name = data['first_name']
-    user.last_name = data['last_name']
+    user.first_name = data['firstName']
+    user.last_name = data['lastName']
     db.session.commit()
 
     return jsonify({'message': 'User detail has been updated'})
 
 
-# get user detail
-@user_bp.route('/<uid>', methods=['GET'])
+# get user profile
+@user_bp.route('/profile', methods=['GET'])
 @token_required
-def get_one_user(_, uid):
-    user = User.query.filter_by(uid=uid).first()
+def get_one_user(current_user):
+    user = User.query.filter_by(uid=current_user.uid).first()
 
     if not user:
         return jsonify({'message': 'No user found!'})
 
     user_data = {'uid': user.uid,
-                 'first_name': user.first_name,
-                 'last_name': user.last_name,
+                 'firstName': user.first_name,
+                 'lastName': user.last_name,
                  'email': user.email,
                  'username': user.username,
-                 'user_type': user.user_type}
+                 'userType': user.user_type}
 
     return jsonify({'user': user_data})
 

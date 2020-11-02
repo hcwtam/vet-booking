@@ -9,6 +9,7 @@ export default function Navbar(): ReactElement {
     <div>
       <Link to="/">Home</Link>
       <Link to="/profile">Profile</Link>
+      <Link to="/settings">Settings</Link>
       <Link to="/logout">Logout</Link>
     </div>
   ) : (

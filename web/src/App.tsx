@@ -5,27 +5,34 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Logout from './pages/Logout';
 import Profile from './pages/Profile';
+import Settings from './pages/Settings';
 import Signup from './pages/Signup';
 import { authContext } from './store/auth';
+import { UserProvider } from './store/user';
 
 function App() {
   const { token } = useContext(authContext);
   return token ? (
-    <>
-      <Navbar />
-      <Switch>
-        <Route path="/profile">
-          <Profile />
-        </Route>
-        <Route path="/logout">
-          <Logout />
-        </Route>
-        <Route exact path="/">
-          <Home />
-        </Route>
-        <Redirect to="/" />
-      </Switch>
-    </>
+    <UserProvider>
+      <>
+        <Navbar />
+        <Switch>
+          <Route path="/profile">
+            <Profile />
+          </Route>
+          <Route path="/settings">
+            <Settings />
+          </Route>
+          <Route path="/logout">
+            <Logout />
+          </Route>
+          <Route exact path="/">
+            <Home />
+          </Route>
+          <Redirect to="/" />
+        </Switch>
+      </>
+    </UserProvider>
   ) : (
     <>
       <Navbar />
