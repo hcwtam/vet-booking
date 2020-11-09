@@ -36,7 +36,7 @@ def create_user():
     user = User.query.filter_by(username=data['username']).first()
 
     token = jwt.encode(
-        {'uid': user.uid, 'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)},
+        {'uid': user.uid, 'exp': datetime.datetime.utcnow() + datetime.timedelta(days=30)},
         os.environ.get("SECRET_KEY"))
 
     return jsonify({'token': token.decode('UTF-8'), 'message': 'New user created!'})
@@ -57,7 +57,7 @@ def login():
 
     if check_password_hash(user.password, auth['password']):
         token = jwt.encode(
-            {'uid': user.uid, 'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)},
+            {'uid': user.uid, 'exp': datetime.datetime.utcnow() + datetime.timedelta(days=30)},
             os.environ.get("SECRET_KEY"))
 
         return jsonify({'token': token.decode('UTF-8')})

@@ -1,21 +1,28 @@
-import React, { ReactElement, useContext } from 'react';
+import React, { ReactElement, useContext, useEffect } from 'react';
 
 import { userContext } from '../store/user';
 
 export default function Profile(): ReactElement {
-  const userData = useContext(userContext);
-  const { email, firstName, lastName, uid, userType, username } = userData;
+  const [data, mutate] = useContext(userContext);
+  const { user } = data;
+  const { email, firstName, lastName, uid, userType, username } = user;
+
+  const { userMutate } = mutate;
+
+  useEffect(() => {
+    userMutate();
+  }, [userMutate]);
 
   return (
     <div>
       <h1>Profile</h1>
       <ul>
-        <li>{email}</li>
-        <li>{firstName}</li>
-        <li>{lastName}</li>
-        <li>{uid}</li>
-        <li>{userType}</li>
-        <li>{username}</li>
+        <li>email: {email}</li>
+        <li>first name: {firstName}</li>
+        <li>last name: {lastName}</li>
+        <li>uid: {uid}</li>
+        <li>user type: {userType}</li>
+        <li>username: {username}</li>
       </ul>
     </div>
   );

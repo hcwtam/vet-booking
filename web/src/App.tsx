@@ -4,6 +4,8 @@ import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Logout from './pages/Logout';
+import Pets from './pages/Pets/index';
+import Pet from './pages/Pets/Pet';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import Signup from './pages/Signup';
@@ -19,6 +21,12 @@ function App() {
         <Switch>
           <Route path="/profile">
             <Profile />
+          </Route>
+          <Route exact path="/pets">
+            <Pets />
+          </Route>
+          <Route path={'/pets/:id'}>
+            <Pet />
           </Route>
           <Route path="/settings">
             <Settings />

@@ -1,4 +1,4 @@
-import React, { ReactElement, useContext } from 'react';
+import React, { ReactElement, useContext, useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { Link, useHistory } from 'react-router-dom';
@@ -9,6 +9,8 @@ import { authContext } from '../store/auth';
 export default function Login(): ReactElement {
   const history = useHistory();
   const { setToken } = useContext(authContext);
+
+  const [errorMessage, setErrorMessage] = useState('');
 
   const initialValues = {
     username: '',
@@ -22,12 +24,16 @@ export default function Login(): ReactElement {
 
   const onSubmit = async (values: LoginFormData) => {
     console.log('Login form data', values);
-    const token = await login(values);
-    if (token) {
-      setToken(token);
+    const res = await login(values);
+    if (typeof res === 'string') {
+      setToken(res);
       history.push('/profile');
     } else {
-      history.push('/');
+      setErrorMessage(
+        res === 401
+          ? 'Incorrect username or password.'
+          : 'Cannot login. Please try again.'
+      );
     }
   };
 
@@ -68,6 +74,7 @@ export default function Login(): ReactElement {
           }}
         </Formik>
       </div>
+      <div>{errorMessage}</div>
       <div>
         Don't have an account?{`  `}
         <Link to="/signup">Sign up</Link>

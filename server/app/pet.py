@@ -1,9 +1,5 @@
 # Pet routes
-import datetime
-import os
-import jwt
-from flask import Blueprint, jsonify, request, make_response, current_app as app
-import uuid
+from flask import Blueprint, jsonify, request
 
 from app import db
 from app.helper import token_required
@@ -19,9 +15,9 @@ def create_pet(current_user):
     data = request.get_json()
 
     new_pet = Pet(name=data['name'],
-                  animal_id=data['animal_id'],  # TODO
+                  animal_id=1,  # TODO
                   gender=data['gender'],
-                  illness_id=data['illness_id'],  # TODO
+                  illness_id=1,  # TODO
                   desexed=data['desexed'],
                   owner_id=current_user.id)
     db.session.add(new_pet)
@@ -31,10 +27,10 @@ def create_pet(current_user):
 
 
 # update pet info
-@pet_bp.route('/<uid>', methods=['PUT'])
+@pet_bp.route('/<pet_id>', methods=['PUT'])
 @token_required
-def change_pet_info(current_user, uid):
-    pet = Pet.query.filter_by(id=uid).first()
+def change_pet_info(current_user, pet_id):
+    pet = Pet.query.filter_by(id=pet_id).first()
 
     if not pet:
         return jsonify({'message': 'No such pet found!'})
@@ -60,17 +56,21 @@ def get_pets(current_user):
     output = []
 
     for pet in pets:
-        pet_data = {'name': pet.name, 'birth_date': pet.birth_date, 'gender': pet.gender, 'desexed': pet.desexed}
+        pet_data = {'id': pet.id,
+                    'name': pet.name,
+                    'birthDate': pet.birth_date,
+                    'gender': pet.gender,
+                    'desexed': pet.desexed}
         output.append(pet_data)
 
     return jsonify({'pets': output})
 
 
 # Delete pet
-@pet_bp.route('/<uid>', methods=['DELETE'])
+@pet_bp.route('/<pet_id>', methods=['DELETE'])
 @token_required
-def delete_pet(current_user, uid):
-    pet = Pet.query.filter_by(id=uid).first()
+def delete_pet(current_user, pet_id):
+    pet = Pet.query.filter_by(id=pet_id).first()
 
     if not pet:
         return jsonify({'message': 'No such pet found!'})

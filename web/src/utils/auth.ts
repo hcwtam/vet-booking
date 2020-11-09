@@ -39,7 +39,7 @@ export const login = async (values: LoginFormData) => {
       ...values
     })
     .then((res) => {
-      const expirationDate = (Date.now() * 30 * 60 * 1000) // from now to 30 minutes later
+      const expirationDate = (Date.now() * 30 * 24 * 60 * 60 * 1000) // from now to 30 days later
         .toString();
 
       localStorage.setItem('token', res.data.token);
@@ -47,10 +47,7 @@ export const login = async (values: LoginFormData) => {
 
       return res.data.token;
     })
-    .catch((err) => {
-      console.log(err);
-      return null;
-    });
+    .catch((err) => err.response.status);
 };
 
 export const signup = async (values: SignupFormData) => {
@@ -60,7 +57,7 @@ export const signup = async (values: SignupFormData) => {
     })
     .then((res) => {
       console.log(res);
-      const expirationDate = (Date.now() * 30 * 60 * 1000) // from now to 30 minutes later
+      const expirationDate = (Date.now() * 30 * 24 * 60 * 60 * 1000) // from now to 30 days later
         .toString();
 
       localStorage.setItem('token', res.data.token);

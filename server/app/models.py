@@ -68,7 +68,7 @@ class Pet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
     animal_id = db.Column(db.Integer, db.ForeignKey('animal_type.id'), nullable=False)
-    birth_date = db.Column(db.DateTime)
+    birth_date = db.Column(db.DateTime)  # TODO
     gender = db.Column(db.String(6), nullable=False)
     illness_id = db.Column(db.Integer, db.ForeignKey('illness.id'), nullable=False)
     desexed = db.Column(db.Boolean, nullable=False)

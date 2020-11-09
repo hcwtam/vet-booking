@@ -14,8 +14,8 @@ ReactDOM.render(
     <AuthProvider>
       <SWRConfig
         value={{
-          fetcher: (token) =>
-            axios.get('user/profile', {
+          fetcher: (slug, token) =>
+            axios.get(slug, {
               headers: {
                 'x-access-token': token
               }
