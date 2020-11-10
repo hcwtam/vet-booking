@@ -18,7 +18,7 @@ def create_pet(current_user):
                   animal_id=1,  # TODO
                   gender=data['gender'],
                   illness_id=1,  # TODO
-                  desexed=data['desexed'],
+                  desexed=data['desexed'] == "true",
                   owner_id=current_user.id)
     db.session.add(new_pet)
     db.session.commit()
@@ -41,7 +41,7 @@ def change_pet_info(current_user, pet_id):
     data = request.get_json()
 
     pet.name = data['name']
-    pet.illness_id = data['illness_id']
+    pet.illness_id = 1  # TODO
     db.session.commit()
 
     return jsonify({'message': 'Pet information has been updated.'})

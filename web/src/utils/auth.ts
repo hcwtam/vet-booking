@@ -14,11 +14,6 @@ export type SignupFormData = {
   userType: string;
 };
 
-export type SettingsData = {
-  firstName: string;
-  lastName: string;
-};
-
 export interface UserData {
   email: string;
   fullName: string;
@@ -62,19 +57,6 @@ export const signup = async (values: SignupFormData) => {
 
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('expirationDate', expirationDate);
-    })
-    .catch((err) => {
-      console.log(err);
-      return null;
-    });
-};
-
-export const changeUserInfo = async (values: SettingsData, token: string) => {
-  return axios
-    .put('/user/profile', values, {
-      headers: {
-        'x-access-token': token
-      }
     })
     .catch((err) => {
       console.log(err);

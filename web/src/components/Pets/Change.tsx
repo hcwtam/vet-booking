@@ -1,29 +1,31 @@
 import React, { ReactElement, useContext } from 'react';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
-import { useHistory } from 'react-router-dom';
 
-import { changeUserInfo, SettingsData } from '../utils/user';
-import { authContext } from '../store/auth';
+import { authContext } from '../../store/auth';
+import { PetChangeForm, changePetInfo } from '../../utils/user';
 
-export default function Settings(): ReactElement {
-  const history = useHistory();
+interface Prop {
+  name: string;
+  id: string;
+  petsMutate: (data?: any, shouldRevalidate?: boolean | undefined) => any;
+}
+
+export default function Change({ name, id, petsMutate }: Prop): ReactElement {
   const { token } = useContext(authContext);
 
   const initialValues = {
-    firstName: '',
-    lastName: ''
+    name
   };
 
   const validationSchema = Yup.object({
-    firstName: Yup.string().required('Required'),
-    lastName: Yup.string().required('Required')
+    name: Yup.string().required('Required')
   });
 
-  const onSubmit = async (values: SettingsData) => {
+  const onSubmit = async (values: PetChangeForm) => {
     console.log('Settings data', values);
-    await changeUserInfo(values, token as string);
-    history.push('/profile');
+    await changePetInfo(values, id, token as string);
+    petsMutate();
   };
 
   return (
@@ -40,15 +42,9 @@ export default function Settings(): ReactElement {
               <Form>
                 <Field
                   type="text"
-                  label="First name"
-                  name="firstName"
-                  placeholder="First name"
-                />
-                <Field
-                  type="text"
-                  label="Last name"
-                  name="lastName"
-                  placeholder="Last name"
+                  label="name"
+                  name="name"
+                  placeholder="name"
                 />
                 <button
                   type="submit"

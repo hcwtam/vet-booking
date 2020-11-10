@@ -24,7 +24,7 @@ type UserType = {
 };
 
 export type PetType = {
-  id: string;
+  id: number;
   name: string;
   birthDate?: string;
   gender: string;
@@ -61,11 +61,7 @@ function UserProvider({ children }: Props): ReactElement {
   );
 
   let user = INIT_USERTYPE;
-  if (userData) {
-    console.log(userData);
-
-    user = userData.data.user;
-  }
+  if (userData) user = userData.data.user;
 
   let pets: PetType[] = [];
   if (petsData) pets = petsData.data.pets;
