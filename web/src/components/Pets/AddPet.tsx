@@ -14,18 +14,19 @@ export default function AddPet({ petsMutate }: Prop): ReactElement {
 
   const initialValues = {
     name: '',
+    animalType: '',
     gender: '',
     desexed: ''
   };
 
   const validationSchema = Yup.object({
     name: Yup.string().required('Required'),
+    animalType: Yup.string().required('Required'),
     gender: Yup.string().required('Required'),
     desexed: Yup.string().required('Required')
   });
 
   const onSubmit = async (values: AddPetForm) => {
-    console.log('New pet data', values);
     await addPet(values, token as string);
     petsMutate();
   };
@@ -48,6 +49,13 @@ export default function AddPet({ petsMutate }: Prop): ReactElement {
                   name="name"
                   placeholder="Name"
                 />
+                <Field as="select" label="Animal Type" name="animalType">
+                  <option value="">Type</option>
+                  <option value="dog">Dog</option>
+                  <option value="cat">Cat</option>
+                  <option value="rabbit">Rabbit</option>
+                  <option value="turtle">Turtle</option>
+                </Field>
                 <Field as="select" label="Gender" name="gender">
                   <option value="">Gender</option>
                   <option value="male">Male</option>

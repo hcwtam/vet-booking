@@ -25,7 +25,7 @@ class PetOwner(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     phone = db.Column(db.String(20), nullable=False)
-    address = db.Column(db.String(120), unique=True)
+    address = db.Column(db.String(120))
     pets = db.relationship('Pet', backref='pet_owner', lazy=True)
 
 
@@ -59,6 +59,7 @@ class Clinic(db.Model):
 
 class AnimalType(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False)
     pets = db.relationship('Pet', backref='animal_type', lazy=True)
     clinics = db.relationship('Clinic', backref='animal_type', lazy=True)
     vets = db.relationship('Vet', backref='animal_type', lazy=True)
@@ -70,7 +71,7 @@ class Pet(db.Model):
     animal_id = db.Column(db.Integer, db.ForeignKey('animal_type.id'), nullable=False)
     birth_date = db.Column(db.DateTime)  # TODO
     gender = db.Column(db.String(6), nullable=False)
-    illness_id = db.Column(db.Integer, db.ForeignKey('illness.id'), nullable=False)
+    illness_id = db.Column(db.Integer, db.ForeignKey('illness.id'))
     desexed = db.Column(db.Boolean, nullable=False)
     owner_id = db.Column(db.Integer, db.ForeignKey('pet_owner.id'), nullable=False)
     bookings = db.relationship('Booking', backref='pet', lazy=True)

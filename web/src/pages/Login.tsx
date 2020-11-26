@@ -23,7 +23,6 @@ export default function Login(): ReactElement {
   });
 
   const onSubmit = async (values: LoginFormData) => {
-    console.log('Login form data', values);
     const res = await login(values);
     if (typeof res === 'string') {
       setToken(res);

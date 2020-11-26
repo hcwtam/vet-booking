@@ -3,7 +3,7 @@ from flask import Blueprint, jsonify, request
 
 from app import db
 from app.helper import token_required
-from app.models import User, Pet
+from app.models import Pet, AnimalType
 
 pet_bp = Blueprint('pet_api', __name__, url_prefix='/pet')
 
@@ -14,8 +14,15 @@ pet_bp = Blueprint('pet_api', __name__, url_prefix='/pet')
 def create_pet(current_user):
     data = request.get_json()
 
+    # search for pet type id from input
+    animal_type = AnimalType.query.filter_by(name=data['animalType']).first()
+    if not animal_type:
+        db.session.add(AnimalType(name=data['animalType']))
+        animal_type = AnimalType.query.filter_by(name=data['animalType']).first()
+
+    # add to db
     new_pet = Pet(name=data['name'],
-                  animal_id=1,  # TODO
+                  animal_id=animal_type.id,
                   gender=data['gender'],
                   illness_id=1,  # TODO
                   desexed=data['desexed'] == "true",
@@ -56,8 +63,10 @@ def get_pets(current_user):
     output = []
 
     for pet in pets:
+        animal_type = AnimalType.query.filter_by(id=pet.animal_id).first()
         pet_data = {'id': pet.id,
                     'name': pet.name,
+                    'animalType': animal_type.name,
                     'birthDate': pet.birth_date,
                     'gender': pet.gender,
                     'desexed': pet.desexed}

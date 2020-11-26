@@ -1,11 +1,15 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useContext, useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { Link, useHistory } from 'react-router-dom';
 import { signup, SignupFormData } from '../utils/auth';
+import { authContext } from '../store/auth';
 
 export default function Signup(): ReactElement {
   const history = useHistory();
+  const { setToken } = useContext(authContext);
+
+  const [errorMessage, setErrorMessage] = useState('');
 
   const initialValues = {
     firstName: '',
@@ -26,9 +30,17 @@ export default function Signup(): ReactElement {
   });
 
   const onSubmit = async (values: SignupFormData) => {
-    console.log('Signup form data', values);
-    signup(values);
-    history.push('/');
+    const res = await signup(values);
+    if (typeof res === 'string') {
+      setToken(res);
+      history.push('/profile');
+    } else {
+      setErrorMessage(
+        res === 401
+          ? 'Incorrect username or password.'
+          : 'Cannot login. Please try again.'
+      );
+    }
   };
 
   return (
@@ -87,6 +99,7 @@ export default function Signup(): ReactElement {
           }}
         </Formik>
       </div>
+      <div>{errorMessage}</div>
       <div>
         Have an account?{`  `}
         <Link to="/login">Log in</Link>

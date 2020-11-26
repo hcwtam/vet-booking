@@ -57,6 +57,8 @@ export const signup = async (values: SignupFormData) => {
 
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('expirationDate', expirationDate);
+
+      return res.data.token;
     })
     .catch((err) => {
       console.log(err);

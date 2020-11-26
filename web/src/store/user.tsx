@@ -26,6 +26,7 @@ type UserType = {
 export type PetType = {
   id: number;
   name: string;
+  animalType: string;
   birthDate?: string;
   gender: string;
   desexed: boolean;

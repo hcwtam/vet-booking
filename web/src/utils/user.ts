@@ -57,3 +57,16 @@ export const changePetInfo = async (
       return null;
     });
 };
+
+export const deletePet = async (id: string, token: string) => {
+  return axios
+    .delete(`/pet/${id}`, {
+      headers: {
+        'x-access-token': token
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      return null;
+    });
+};

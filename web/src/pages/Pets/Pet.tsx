@@ -2,6 +2,7 @@ import React, { ReactElement, useContext, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { PetType, userContext } from '../../store/user';
 import Change from '../../components/Pets/Change';
+import Delete from '../../components/Pets/Delete';
 
 const getPetDataById = (petsData: PetType[], id: string) => {
   if (isNaN(+id)) return null;
@@ -15,6 +16,7 @@ export default function Pets(): ReactElement {
   const [petExist, setPetExist] = useState<boolean>(true);
   const [petData, setPetData] = useState<PetType>();
   const [showForm, setShowForm] = useState<boolean>(false);
+  const [showDeleteOption, setShowDeleteOption] = useState<boolean>(false);
 
   useEffect(() => {
     if (!petExist) history.push('/pets');
@@ -34,6 +36,7 @@ export default function Pets(): ReactElement {
       <ul>
         <li>id: {petData.id}</li>
         <li>name: {petData.name}</li>
+        <li>animal type: {petData.animalType}</li>
         {petData.birthDate ? <li>birthDate: {petData.birthDate}</li> : null}
         <li>gender: {petData.gender}</li>
         <li>desexed: {petData.desexed ? 'yes' : 'no'}</li>
@@ -41,6 +44,15 @@ export default function Pets(): ReactElement {
       <button onClick={() => setShowForm(true)}>Change Pet Detail</button>
       {showForm ? (
         <Change name={petData.name} id={id} petsMutate={petsMutate} />
+      ) : null}
+      <br />
+      <button onClick={() => setShowDeleteOption(true)}>Delete this pet</button>
+      {showDeleteOption ? (
+        <Delete
+          hide={() => setShowDeleteOption(false)}
+          id={id}
+          petsMutate={petsMutate}
+        />
       ) : null}
     </div>
   ) : (
