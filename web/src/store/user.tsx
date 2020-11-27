@@ -30,6 +30,7 @@ export type PetType = {
   birthDate?: string;
   gender: string;
   desexed: boolean;
+  illnesses: string[];
 };
 
 const INIT_USERTYPE = {

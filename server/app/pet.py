@@ -3,7 +3,7 @@ from flask import Blueprint, jsonify, request
 
 from app import db
 from app.helper import token_required
-from app.models import Pet, AnimalType
+from app.models import Pet, AnimalType, Illness
 
 pet_bp = Blueprint('pet_api', __name__, url_prefix='/pet')
 
@@ -24,10 +24,21 @@ def create_pet(current_user):
     new_pet = Pet(name=data['name'],
                   animal_id=animal_type.id,
                   gender=data['gender'],
-                  illness_id=1,  # TODO
                   desexed=data['desexed'] == "true",
                   owner_id=current_user.id)
     db.session.add(new_pet)
+
+    # search for illness id from input and append
+    if data['illness']:
+        for illness_name in data['illness']:
+            illness = Illness.query.filter_by(name=illness_name).first()
+
+            if not illness:
+                db.session.add(Illness(name=illness_name))
+                illness = Illness.query.filter_by(name=illness_name).first()
+
+            new_pet.illnesses.append(illness)
+
     db.session.commit()
 
     return jsonify({'message': 'New pet created!'})
@@ -64,12 +75,18 @@ def get_pets(current_user):
 
     for pet in pets:
         animal_type = AnimalType.query.filter_by(id=pet.animal_id).first()
+
+        illnesses = []
+        for illness in pet.illnesses:
+            illnesses.append(illness.name)
+
         pet_data = {'id': pet.id,
                     'name': pet.name,
                     'animalType': animal_type.name,
                     'birthDate': pet.birth_date,
                     'gender': pet.gender,
-                    'desexed': pet.desexed}
+                    'desexed': pet.desexed,
+                    'illnesses': illnesses}
         output.append(pet_data)
 
     return jsonify({'pets': output})

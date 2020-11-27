@@ -65,15 +65,21 @@ class AnimalType(db.Model):
     vets = db.relationship('Vet', backref='animal_type', lazy=True)
 
 
+pet_illness = db.Table('pet_illness',
+                       db.Column('pet_id', db.Integer, db.ForeignKey('pet.id')),
+                       db.Column('illness_id', db.Integer, db.ForeignKey('illness.id'))
+                       )
+
+
 class Pet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
     animal_id = db.Column(db.Integer, db.ForeignKey('animal_type.id'), nullable=False)
     birth_date = db.Column(db.DateTime)  # TODO
     gender = db.Column(db.String(6), nullable=False)
-    illness_id = db.Column(db.Integer, db.ForeignKey('illness.id'))
     desexed = db.Column(db.Boolean, nullable=False)
     owner_id = db.Column(db.Integer, db.ForeignKey('pet_owner.id'), nullable=False)
+    illnesses = db.relationship('Illness', secondary=pet_illness, backref='pets', lazy=True)
     bookings = db.relationship('Booking', backref='pet', lazy=True)
 
     def __repr__(self):
@@ -82,8 +88,8 @@ class Pet(db.Model):
 
 class Illness(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False)
     description = db.Column(db.String(100))
-    pets = db.relationship('Pet', backref='illness', lazy=True)
 
 
 class Booking(db.Model):

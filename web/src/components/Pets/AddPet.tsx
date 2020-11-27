@@ -16,14 +16,16 @@ export default function AddPet({ petsMutate }: Prop): ReactElement {
     name: '',
     animalType: '',
     gender: '',
-    desexed: ''
+    desexed: '',
+    illness: []
   };
 
   const validationSchema = Yup.object({
     name: Yup.string().required('Required'),
     animalType: Yup.string().required('Required'),
     gender: Yup.string().required('Required'),
-    desexed: Yup.string().required('Required')
+    desexed: Yup.string().required('Required'),
+    illness: Yup.array()
   });
 
   const onSubmit = async (values: AddPetForm) => {
@@ -66,6 +68,37 @@ export default function AddPet({ petsMutate }: Prop): ReactElement {
                   <option value="true">Yes</option>
                   <option value="false">No</option>
                 </Field>
+                <div role="group" aria-labelledby="checkbox-group">
+                  Illness:
+                  <label>
+                    <Field
+                      type="checkbox"
+                      name="illness"
+                      value="skin allergy"
+                    />
+                    Skin Allergy
+                  </label>
+                  <label>
+                    <Field
+                      type="checkbox"
+                      name="illness"
+                      value="ear infection"
+                    />
+                    Ear Infection
+                  </label>
+                  <label>
+                    <Field type="checkbox" name="illness" value="diarrhea" />
+                    Diarrhea
+                  </label>
+                  <label>
+                    <Field type="checkbox" name="illness" value="arthritis" />
+                    Arthritis
+                  </label>
+                  <label>
+                    <Field type="checkbox" name="illness" value="diabetes" />
+                    Diabetes
+                  </label>
+                </div>
                 <button
                   type="submit"
                   disabled={

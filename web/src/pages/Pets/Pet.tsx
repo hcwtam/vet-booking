@@ -40,6 +40,14 @@ export default function Pets(): ReactElement {
         {petData.birthDate ? <li>birthDate: {petData.birthDate}</li> : null}
         <li>gender: {petData.gender}</li>
         <li>desexed: {petData.desexed ? 'yes' : 'no'}</li>
+        <li>
+          illnesses:{' '}
+          {petData.illnesses.length
+            ? petData.illnesses.map((illness) => (
+                <span key={illness}>{`| ${illness} |`}</span>
+              ))
+            : 'none'}
+        </li>
       </ul>
       <button onClick={() => setShowForm(true)}>Change Pet Detail</button>
       {showForm ? (
