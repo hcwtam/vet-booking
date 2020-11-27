@@ -41,7 +41,7 @@ export default function Pets(): ReactElement {
         <li>gender: {petData.gender}</li>
         <li>desexed: {petData.desexed ? 'yes' : 'no'}</li>
         <li>
-          illnesses:{' '}
+          illnesses:
           {petData.illnesses.length
             ? petData.illnesses.map((illness) => (
                 <span key={illness}>{`| ${illness} |`}</span>
