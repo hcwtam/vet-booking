@@ -38,7 +38,7 @@ export default function Signup(): ReactElement {
       setErrorMessage(
         res === 401
           ? 'Incorrect username or password.'
-          : 'Cannot login. Please try again.'
+          : 'Sign up failed. Please try again.'
       );
     }
   };

@@ -4,7 +4,7 @@ import os
 
 import flask_cors
 import jwt
-from flask import Blueprint, jsonify, request, make_response, current_app as app
+from flask import Blueprint, jsonify, request, make_response
 from werkzeug.security import generate_password_hash, check_password_hash
 import uuid
 

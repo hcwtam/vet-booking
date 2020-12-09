@@ -3,7 +3,8 @@ from flask import Blueprint, jsonify, request
 
 from app import db
 from app.helper import token_required
-from app.models import Pet, AnimalType, Illness
+from app.models import Pet, AnimalType
+from app.routes.pet.helper import find_pet_type, find_illness
 
 pet_bp = Blueprint('pet_api', __name__, url_prefix='/pet')
 
@@ -14,28 +15,13 @@ pet_bp = Blueprint('pet_api', __name__, url_prefix='/pet')
 def create_pet(current_user):
     data = request.get_json()
 
-    # search for pet type id from input
-    animal_type = AnimalType.query.filter_by(name=data['animalType']).first()
-    if not animal_type:
-        db.session.add(AnimalType(name=data['animalType']))
-        animal_type = AnimalType.query.filter_by(name=data['animalType']).first()
-
-    # add to db
-    new_pet = Pet(name=data['name'],
-                  animal_id=animal_type.id,
-                  gender=data['gender'],
-                  desexed=data['desexed'] == "true",
-                  owner_id=current_user.id)
+    new_pet = find_pet_type(data, current_user)
     db.session.add(new_pet)
 
-    # search for illness id from input and append
+    # search for illness from input and append
     if data['illness']:
         for illness_name in data['illness']:
-            illness = Illness.query.filter_by(name=illness_name).first()
-
-            if not illness:
-                db.session.add(Illness(name=illness_name))
-                illness = Illness.query.filter_by(name=illness_name).first()
+            illness = find_illness(illness_name)
 
             new_pet.illnesses.append(illness)
 

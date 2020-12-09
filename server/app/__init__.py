@@ -15,8 +15,8 @@ def create_app():
 
     with app.app_context():
         # Import routes
-        from app.user import user_bp
-        from app.pet import pet_bp
+        from app.routes.user.user import user_bp
+        from app.routes.pet.pet import pet_bp
 
         # Create sql tables for our data models
         db.create_all()

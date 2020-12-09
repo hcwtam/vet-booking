@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
 
 export default function Home(): ReactElement {
-  return <div>Welcome to Vet Booking System</div>;
+  return <div>Welcome to Vet Booking System for Pet Owners</div>;
 }
