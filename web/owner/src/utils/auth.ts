@@ -34,6 +34,9 @@ export const login = async (values: LoginFormData) => {
       ...values
     })
     .then((res) => {
+      // forbid user types apart from 'owner' from logging in
+      if (res.data.userType !== 'owner') return null;
+
       const expirationDate = (Date.now() * 30 * 24 * 60 * 60 * 1000) // from now to 30 days later
         .toString();
 

@@ -10,7 +10,7 @@ import uuid
 
 from app import db
 from app.helper import token_required
-from app.models import User
+from app.models import User, PetOwner, Clinic
 
 user_bp = Blueprint('user_api', __name__, url_prefix='/user')
 flask_cors.CORS(user_bp)
@@ -22,15 +22,27 @@ def create_user():
     data = request.get_json()
 
     hashed_password = generate_password_hash(data['password'], method='sha256')
+    user_uid = str(uuid.uuid4())
 
-    new_user = User(uid=str(uuid.uuid4()),
+    new_user = User(uid=user_uid,
                     first_name=data['firstName'],
                     last_name=data['lastName'],
                     email=data['email'],
                     username=data['username'],
                     password=hashed_password,
                     user_type=data['userType'])
+
     db.session.add(new_user)
+
+    # create specific user type data
+    if data['userType'] == 'owner':
+        user_type_detail = PetOwner(user_id=user_uid)
+        db.session.add(user_type_detail)
+
+    if data['userType'] == 'clinic':
+        user_type_detail = Clinic(user_id=user_uid)
+        db.session.add(user_type_detail)
+
     db.session.commit()
 
     user = User.query.filter_by(username=data['username']).first()
@@ -60,7 +72,7 @@ def login():
             {'uid': user.uid, 'exp': datetime.datetime.utcnow() + datetime.timedelta(days=30)},
             os.environ.get("SECRET_KEY"))
 
-        return jsonify({'token': token.decode('UTF-8')})
+        return jsonify({'token': token.decode('UTF-8'), 'userType': user.user_type})
 
     return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
 
@@ -119,21 +131,46 @@ def get_all_users(current_user):
     return jsonify({'users': output})
 
 
-@user_bp.route('/<public_id>', methods=['PUT'])
+# get clinic profile
+@user_bp.route('/clinic', methods=['GET'])
 @token_required
-def promote_user(current_user, public_id):
-    if not current_user.admin:
-        return jsonify({'message': 'Cannot perform that function!'})
+def get_clinic_profile(current_user):
+    clinic = Clinic.query.filter_by(user_id=current_user.uid).first()
 
-    user = User.query.filter_by(public_id=public_id).first()
+    if not clinic:
+        return jsonify({'message': 'No clinic found!'})
 
-    if not user:
+    clinic_data = {'id': clinic.id,
+                   'name': clinic.name,
+                   'address': clinic.address,
+                   'phone': clinic.phone,
+                   'contactEmail': clinic.contact_email}
+
+    return jsonify({'clinic': clinic_data})
+
+
+# update clinic profile
+@user_bp.route('/clinic', methods=['PUT'])
+@token_required
+def change_clinic_detail(current_user):
+    clinic = Clinic.query.filter_by(user_id=current_user.uid).first()
+
+    if not clinic:
         return jsonify({'message': 'No user found!'})
 
-    user.admin = True
+    data = request.get_json()
+
+    if data['name']:
+        clinic.name = data['name']
+    if data['address']:
+        clinic.address = data['address']
+    if data['phone']:
+        clinic.phone = data['phone']
+    if data['contactEmail']:
+        clinic.contact_email = data['contactEmail']
     db.session.commit()
 
-    return jsonify({'message': 'The user has been promoted!'})
+    return jsonify({'message': 'Clinic detail has been updated'})
 
 
 @user_bp.route('/<public_id>', methods=['DELETE'])
@@ -151,5 +188,3 @@ def delete_user(current_user, public_id):
     db.session.commit()
 
     return jsonify({'message': 'The user has been deleted!'})
-
-

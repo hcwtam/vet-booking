@@ -7,46 +7,48 @@ interface Props {
 }
 
 type UserContext = [
-  { user: UserType; pets: PetType[] },
+  { user: UserType; clinic: ClinicType },
   {
     userMutate: (data?: any, shouldRevalidate?: boolean | undefined) => any;
-    petsMutate: (data?: any, shouldRevalidate?: boolean | undefined) => any;
+    clinicMutate: (data?: any, shouldRevalidate?: boolean | undefined) => any;
   }
 ];
 
 type UserType = {
   uid: string;
-  firstName: string;
-  lastName: string;
   email: string;
   username: string;
   userType: string;
 };
 
-export type PetType = {
-  id: number;
-  name: string;
-  animalType: string;
-  birthDate?: string;
-  gender: string;
-  desexed: boolean;
-  illnesses: string[];
+export type ClinicType = {
+  id: string;
+  name?: string;
+  address?: string;
+  phone?: string;
+  contactEmail?: string;
 };
 
 const INIT_USERTYPE = {
   uid: '',
-  firstName: '',
-  lastName: '',
   email: '',
   username: '',
   userType: ''
 };
 
+const INIT_CLINICTYPE = {
+  id: '',
+  name: '',
+  address: '',
+  phone: '',
+  contactEmail: ''
+};
+
 const userContext = createContext<UserContext>([
-  { user: INIT_USERTYPE, pets: [] as PetType[] },
+  { user: INIT_USERTYPE, clinic: INIT_CLINICTYPE },
   {
     userMutate: () => null,
-    petsMutate: () => null
+    clinicMutate: () => null
   }
 ]);
 
@@ -58,21 +60,21 @@ function UserProvider({ children }: Props): ReactElement {
   const { data: userData, mutate: userMutate } = useSWR(
     token ? ['user/profile', token] : null
   );
-  const { data: petsData, mutate: petsMutate } = useSWR(
-    token ? ['pet', token] : null
+  const { data: clinicData, mutate: clinicMutate } = useSWR(
+    token ? ['user/clinic', token] : null
   );
 
   let user = INIT_USERTYPE;
   if (userData) user = userData.data.user;
 
-  let pets: PetType[] = [];
-  if (petsData) pets = petsData.data.pets;
+  let clinic = INIT_CLINICTYPE;
+  if (clinicData) clinic = clinicData.data.clinic;
 
   return (
     <Provider
       value={[
-        { user, pets },
-        { userMutate, petsMutate }
+        { user, clinic },
+        { userMutate, clinicMutate }
       ]}
     >
       {children}

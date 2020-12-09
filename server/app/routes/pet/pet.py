@@ -15,7 +15,14 @@ pet_bp = Blueprint('pet_api', __name__, url_prefix='/pet')
 def create_pet(current_user):
     data = request.get_json()
 
-    new_pet = find_pet_type(data, current_user)
+    animal_type = find_pet_type(data, current_user)
+
+    # add found pet to db
+    new_pet = Pet(name=data['name'],
+                  animal_id=animal_type.id,
+                  gender=data['gender'],
+                  desexed=data['desexed'] == "true",
+                  owner_id=current_user.id)
     db.session.add(new_pet)
 
     # search for illness from input and append
