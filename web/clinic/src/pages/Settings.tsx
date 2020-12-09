@@ -6,6 +6,8 @@ import { useHistory } from 'react-router-dom';
 import { changeUserInfo, SettingsData } from '../utils/user';
 import { authContext } from '../store/auth';
 
+const PHONE_REGEX = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+
 export default function Settings(): ReactElement {
   const history = useHistory();
   const { token } = useContext(authContext);
@@ -16,13 +18,11 @@ export default function Settings(): ReactElement {
     phone: ''
   };
 
-  const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
-
   const validationSchema = Yup.object({
     name: Yup.string().required('Required'),
     address: Yup.string().required('Required'),
     phone: Yup.string()
-      .matches(phoneRegExp, 'Phone number is not valid')
+      .matches(PHONE_REGEX, 'Phone number is not valid')
       .required('Required')
   });
 
