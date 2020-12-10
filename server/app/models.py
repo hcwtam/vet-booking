@@ -44,6 +44,12 @@ class Staff(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
 
+clinic_animalType = db.Table('clinic_animalType',
+                             db.Column('clinic_id', db.Integer, db.ForeignKey('clinic.id')),
+                             db.Column('animalType_id', db.Integer, db.ForeignKey('animal_type.id'))
+                             )
+
+
 class Clinic(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
@@ -52,7 +58,7 @@ class Clinic(db.Model):
     phone = db.Column(db.String(20))
     contact_email = db.Column(db.String(120), unique=True)
     opening_hours = db.Column(db.String(50))
-    animal_id = db.Column(db.Integer, db.ForeignKey('animal_type.id'))
+    animal_types = db.relationship('AnimalType', secondary=clinic_animalType, backref='clinics', lazy=True)
     bookings = db.relationship('Booking', backref='clinic', lazy=True)
     staffs = db.relationship('Staff', backref='clinic', lazy=True)
     vets = db.relationship('Vet', backref='clinic', lazy=True)
@@ -62,7 +68,6 @@ class AnimalType(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
     pets = db.relationship('Pet', backref='animal_type', lazy=True)
-    clinics = db.relationship('Clinic', backref='animal_type', lazy=True)
     vets = db.relationship('Vet', backref='animal_type', lazy=True)
 
 

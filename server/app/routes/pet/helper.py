@@ -1,8 +1,8 @@
 from app import db
-from app.models import Pet, AnimalType, Illness
+from app.models import AnimalType, Illness
 
 
-def find_pet_type(data, current_user):
+def find_pet_type(data):
     # search for pet type id from input
     animal_type = AnimalType.query.filter_by(name=data['animalType']).first()
     if not animal_type:

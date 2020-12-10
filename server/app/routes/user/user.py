@@ -11,6 +11,7 @@ import uuid
 from app import db
 from app.helper import token_required
 from app.models import User, PetOwner, Clinic
+from app.routes.user.helper import find_animal_type
 
 user_bp = Blueprint('user_api', __name__, url_prefix='/user')
 flask_cors.CORS(user_bp)
@@ -140,11 +141,16 @@ def get_clinic_profile(current_user):
     if not clinic:
         return jsonify({'message': 'No clinic found!'})
 
+    animal_types = []
+    for animal_type in clinic.animal_types:
+        animal_types.append(animal_type.name)
+
     clinic_data = {'id': clinic.id,
                    'name': clinic.name,
                    'address': clinic.address,
                    'phone': clinic.phone,
-                   'contactEmail': clinic.contact_email}
+                   'contactEmail':clinic.contact_email,
+                   'animalTypes': animal_types}
 
     return jsonify({'clinic': clinic_data})
 
@@ -168,6 +174,14 @@ def change_clinic_detail(current_user):
         clinic.phone = data['phone']
     if data['contactEmail']:
         clinic.contact_email = data['contactEmail']
+    # search for animal types from input and append
+    if data['animalTypes']:
+        clinic.animal_types = []
+        for animal_type_name in data['animalTypes']:
+            animal_type = find_animal_type(animal_type_name)
+
+            clinic.animal_types.append(animal_type)
+
     db.session.commit()
 
     return jsonify({'message': 'Clinic detail has been updated'})

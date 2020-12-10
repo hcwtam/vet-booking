@@ -31,7 +31,7 @@ export default function Change({ name, id, petsMutate }: Prop): ReactElement {
   return (
     <>
       <div>
-        <h1>Change user information</h1>
+        <h1>Change pet information</h1>
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}

@@ -15,7 +15,7 @@ pet_bp = Blueprint('pet_api', __name__, url_prefix='/pet')
 def create_pet(current_user):
     data = request.get_json()
 
-    animal_type = find_pet_type(data, current_user)
+    animal_type = find_pet_type(data)
 
     # add found pet to db
     new_pet = Pet(name=data['name'],
@@ -52,7 +52,6 @@ def change_pet_info(current_user, pet_id):
     data = request.get_json()
 
     pet.name = data['name']
-    pet.illness_id = 1  # TODO
     db.session.commit()
 
     return jsonify({'message': 'Pet information has been updated.'})

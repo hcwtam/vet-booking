@@ -25,7 +25,11 @@ export default function Profile(): ReactElement {
         <li>user type: {userType}</li>
         <li>username: {username}</li>
       </ul>
-      {clinic.name && clinic.address && clinic.contactEmail && clinic.phone ? (
+      {clinic.name &&
+      clinic.address &&
+      clinic.contactEmail &&
+      clinic.phone &&
+      clinic.animalTypes?.length ? (
         <>
           <h1>Clinic Info</h1>
           <ul>
@@ -34,6 +38,14 @@ export default function Profile(): ReactElement {
             <li>address: {clinic.address}</li>
             <li>phone: {clinic.phone}</li>
             <li>contact email: {clinic.contactEmail}</li>
+            <li>
+              treatable animal types:{' '}
+              {clinic.animalTypes.length
+                ? clinic.animalTypes.map((animalType) => (
+                    <span key={animalType}>{`| ${animalType} |`}</span>
+                  ))
+                : 'none'}
+            </li>
           </ul>
         </>
       ) : (

@@ -20,14 +20,16 @@ export default function Settings(): ReactElement {
     name: '',
     address: '',
     phone: '',
-    contactEmail: ''
+    contactEmail: '',
+    animalTypes: []
   };
 
   const validationSchema = Yup.object({
     name: Yup.string(),
     address: Yup.string(),
     phone: Yup.string().matches(PHONE_REGEX, 'Phone number is not valid'),
-    contactEmail: Yup.string().email('Invalid email format')
+    contactEmail: Yup.string().email('Invalid email format'),
+    animalTypes: Yup.array()
   });
 
   const onSubmit = async (values: SettingsData) => {
@@ -73,7 +75,25 @@ export default function Settings(): ReactElement {
                   name="contactEmail"
                   placeholder="Contact email"
                 />
-
+                <div role="group" aria-labelledby="checkbox-group">
+                  Treatable animal types:
+                  <label>
+                    <Field type="checkbox" name="animalTypes" value="dog" />
+                    Dog
+                  </label>
+                  <label>
+                    <Field type="checkbox" name="animalTypes" value="cat" />
+                    Cat
+                  </label>
+                  <label>
+                    <Field type="checkbox" name="animalTypes" value="rabbit" />
+                    Rabbit
+                  </label>
+                  <label>
+                    <Field type="checkbox" name="animalTypes" value="turtle" />
+                    Turtle
+                  </label>
+                </div>
                 <button
                   type="submit"
                   disabled={

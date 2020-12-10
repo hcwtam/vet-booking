@@ -27,6 +27,7 @@ export type ClinicType = {
   address?: string;
   phone?: string;
   contactEmail?: string;
+  animalTypes?: string[];
 };
 
 const INIT_USERTYPE = {
@@ -41,7 +42,8 @@ const INIT_CLINICTYPE = {
   name: '',
   address: '',
   phone: '',
-  contactEmail: ''
+  contactEmail: '',
+  animalTypes: []
 };
 
 const userContext = createContext<UserContext>([
