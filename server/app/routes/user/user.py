@@ -99,7 +99,7 @@ def change_user_detail(current_user):
 # get user profile
 @user_bp.route('/profile', methods=['GET'])
 @token_required
-def get_one_user(current_user):
+def get_user_profile(current_user):
     user = User.query.filter_by(uid=current_user.uid).first()
 
     if not user:
@@ -111,6 +111,10 @@ def get_one_user(current_user):
                  'email': user.email,
                  'username': user.username,
                  'userType': user.user_type}
+
+    # update last login depending on the time of getting user info
+    user.last_login = datetime.datetime.now()
+    db.session.commit()
 
     return jsonify({'user': user_data})
 
