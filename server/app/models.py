@@ -57,11 +57,21 @@ class Clinic(db.Model):
     address = db.Column(db.String(120), unique=True)
     phone = db.Column(db.String(20))
     contact_email = db.Column(db.String(120), unique=True)
-    opening_hours = db.Column(db.String(50))
     animal_types = db.relationship('AnimalType', secondary=clinic_animalType, backref='clinics', lazy=True)
     bookings = db.relationship('Booking', backref='clinic', lazy=True)
     staffs = db.relationship('Staff', backref='clinic', lazy=True)
     vets = db.relationship('Vet', backref='clinic', lazy=True)
+    opening_hours = db.relationship('OpeningHours', backref='clinic', lazy=True)
+
+
+class OpeningHours(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    clinic_id = db.Column(db.Integer, db.ForeignKey('clinic.id'), nullable=False)
+    day_of_week = db.Column(db.Integer, nullable=False)
+    start_time = db.Column(db.String(20))
+    break_start_time = db.Column(db.String(20))
+    break_end_time = db.Column(db.String(20))
+    end_time = db.Column(db.String(20))
 
 
 class AnimalType(db.Model):

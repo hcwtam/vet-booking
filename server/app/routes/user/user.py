@@ -11,6 +11,7 @@ import uuid
 from app import db
 from app.helper import token_required
 from app.models import User, PetOwner, Clinic
+from app.routes.pet.helper import find_opening_hours
 from app.routes.user.helper import find_animal_type
 
 user_bp = Blueprint('user_api', __name__, url_prefix='/user')
@@ -183,8 +184,21 @@ def change_clinic_detail(current_user):
         clinic.animal_types = []
         for animal_type_name in data['animalTypes']:
             animal_type = find_animal_type(animal_type_name)
-
             clinic.animal_types.append(animal_type)
+    # opening hours, if input for the day empty, treat as closed on that day
+    if data['openingHours']:
+        # Monday is 0, Tuesday is 1 etc.
+        for index, week_of_day_input in enumerate(data['openingHours']):
+            if week_of_day_input:
+                opening_hours = find_opening_hours(clinic.id, index)
+                if "startTime" in week_of_day_input:
+                    opening_hours.start_time = week_of_day_input['startTime']
+                if "breakStartTime" in week_of_day_input:
+                    opening_hours.break_start_time = week_of_day_input['breakStartTime']
+                if "breakEndTime" in week_of_day_input:
+                    opening_hours.break_end_time = week_of_day_input['breakEndTime']
+                if "endTime" in week_of_day_input:
+                    opening_hours.end_time = week_of_day_input['endTime']
 
     db.session.commit()
 

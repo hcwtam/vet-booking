@@ -1,9 +1,13 @@
+import { openingHoursType } from '../store/user';
 import axios from './axiosInstance';
 
 export type SettingsData = {
   name: string;
   address: string;
   phone: string;
+  contactEmail: string;
+  animalTypes: string[];
+  openingHours: openingHoursType[];
 };
 
 export const changeClinicInfo = async (values: SettingsData, token: string) => {

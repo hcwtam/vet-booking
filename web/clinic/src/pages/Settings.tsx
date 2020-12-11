@@ -21,7 +21,8 @@ export default function Settings(): ReactElement {
     address: '',
     phone: '',
     contactEmail: '',
-    animalTypes: []
+    animalTypes: [],
+    openingHours: []
   };
 
   const validationSchema = Yup.object({
@@ -29,7 +30,8 @@ export default function Settings(): ReactElement {
     address: Yup.string(),
     phone: Yup.string().matches(PHONE_REGEX, 'Phone number is not valid'),
     contactEmail: Yup.string().email('Invalid email format'),
-    animalTypes: Yup.array()
+    animalTypes: Yup.array(),
+    openingHours: Yup.array()
   });
 
   const onSubmit = async (values: SettingsData) => {
@@ -77,22 +79,63 @@ export default function Settings(): ReactElement {
                 />
                 <div role="group" aria-labelledby="checkbox-group">
                   Treatable animal types:
-                  <label>
-                    <Field type="checkbox" name="animalTypes" value="dog" />
-                    Dog
-                  </label>
-                  <label>
-                    <Field type="checkbox" name="animalTypes" value="cat" />
-                    Cat
-                  </label>
-                  <label>
-                    <Field type="checkbox" name="animalTypes" value="rabbit" />
-                    Rabbit
-                  </label>
-                  <label>
-                    <Field type="checkbox" name="animalTypes" value="turtle" />
-                    Turtle
-                  </label>
+                  {['dog', 'cat', 'rabbit', 'turtle'].map((animalType) => (
+                    <label key={animalType}>
+                      <Field
+                        type="checkbox"
+                        name="animalTypes"
+                        value={animalType}
+                      />
+                      {animalType}
+                    </label>
+                  ))}
+                </div>
+                <div role="group">
+                  Opening Hours:
+                  {[
+                    'Monday',
+                    'Tuesday',
+                    'Wednesday',
+                    'Thursday',
+                    'Friday',
+                    'Saturday',
+                    'Sunday'
+                  ].map((dayOfWeek, index) => (
+                    <div key={dayOfWeek}>
+                      <label key={dayOfWeek}>
+                        <h4>{dayOfWeek}</h4>
+                        start time
+                        <Field
+                          type="time"
+                          name={`openingHours.${index}.startTime`}
+                          min="09:00"
+                          max="18:00"
+                        />
+                        break start time
+                        <Field
+                          type="time"
+                          name={`openingHours.${index}.breakStartTime`}
+                          min="09:00"
+                          max="18:00"
+                        />
+                        break end time
+                        <Field
+                          type="time"
+                          name={`openingHours.${index}.breakEndTime`}
+                          min="09:00"
+                          max="18:00"
+                        />
+                        end time
+                        <Field
+                          type="time"
+                          name={`openingHours.${index}.endTime`}
+                          min="09:00"
+                          max="18:00"
+                        />
+                      </label>
+                      <br />
+                    </div>
+                  ))}
                 </div>
                 <button
                   type="submit"

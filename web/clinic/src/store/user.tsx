@@ -21,6 +21,13 @@ type UserType = {
   userType: string;
 };
 
+export type openingHoursType = {
+  startTime: string;
+  breakStartTime?: string;
+  breakEndTime?: string;
+  endTime: string;
+};
+
 export type ClinicType = {
   id: string;
   name?: string;
@@ -28,6 +35,7 @@ export type ClinicType = {
   phone?: string;
   contactEmail?: string;
   animalTypes?: string[];
+  openingHours?: openingHoursType[];
 };
 
 const INIT_USERTYPE = {
@@ -43,7 +51,8 @@ const INIT_CLINICTYPE = {
   address: '',
   phone: '',
   contactEmail: '',
-  animalTypes: []
+  animalTypes: [],
+  openingHours: []
 };
 
 const userContext = createContext<UserContext>([

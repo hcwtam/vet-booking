@@ -29,7 +29,8 @@ export default function Profile(): ReactElement {
       clinic.address &&
       clinic.contactEmail &&
       clinic.phone &&
-      clinic.animalTypes?.length ? (
+      clinic.animalTypes?.length &&
+      clinic.openingHours?.length ? (
         <>
           <h1>Clinic Info</h1>
           <ul>
