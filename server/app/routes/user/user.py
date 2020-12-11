@@ -150,12 +150,21 @@ def get_clinic_profile(current_user):
     for animal_type in clinic.animal_types:
         animal_types.append(animal_type.name)
 
+    opening_hours = []
+    for opening_hours_data in clinic.opening_hours:
+        opening_hours.append({'dayOfWeek': opening_hours_data.day_of_week,
+                              'startTime': opening_hours_data.start_time,
+                              'breakStartTime': opening_hours_data.break_start_time,
+                              'breakEndTime': opening_hours_data.break_end_time,
+                              'endTime': opening_hours_data.end_time})
+
     clinic_data = {'id': clinic.id,
                    'name': clinic.name,
                    'address': clinic.address,
                    'phone': clinic.phone,
-                   'contactEmail':clinic.contact_email,
-                   'animalTypes': animal_types}
+                   'contactEmail': clinic.contact_email,
+                   'animalTypes': animal_types,
+                   'openingHours': opening_hours}
 
     return jsonify({'clinic': clinic_data})
 

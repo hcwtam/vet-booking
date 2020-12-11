@@ -22,6 +22,7 @@ type UserType = {
 };
 
 export type openingHoursType = {
+  dayOfWeek: number;
   startTime: string;
   breakStartTime?: string;
   breakEndTime?: string;
