@@ -29,12 +29,25 @@ class PetOwner(db.Model):
     pets = db.relationship('Pet', backref='pet_owner', lazy=True)
 
 
+vet_animalType = db.Table('vet_animalType',
+                          db.Column('vet_id', db.Integer, db.ForeignKey('vet.id')),
+                          db.Column('animalType_id', db.Integer, db.ForeignKey('animal_type.id'))
+                          )
+
+vet_clinic = db.Table('vet_clinic',
+                      db.Column('vet_id', db.Integer, db.ForeignKey('vet.id')),
+                      db.Column('clinic_id', db.Integer, db.ForeignKey('clinic.id'))
+                      )
+
+
 class Vet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    clinic_id = db.Column(db.Integer, db.ForeignKey('clinic.id'), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    first_name = db.Column(db.String(50))
+    last_name = db.Column(db.String(50))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     phone = db.Column(db.String(20), nullable=False)
-    animal_id = db.Column(db.Integer, db.ForeignKey('animal_type.id'), nullable=False)
+    specialties = db.relationship('AnimalType', secondary=vet_animalType, backref='vets', lazy=True)
+    clinic = db.relationship('Clinic', secondary=vet_clinic, backref='vets', lazy=True)
     bookings = db.relationship('Booking', backref='vet', lazy=True)
 
 
@@ -60,7 +73,6 @@ class Clinic(db.Model):
     animal_types = db.relationship('AnimalType', secondary=clinic_animalType, backref='clinics', lazy=True)
     bookings = db.relationship('Booking', backref='clinic', lazy=True)
     staffs = db.relationship('Staff', backref='clinic', lazy=True)
-    vets = db.relationship('Vet', backref='clinic', lazy=True)
     opening_hours = db.relationship('OpeningHours', backref='clinic', lazy=True)
 
 
@@ -78,7 +90,6 @@ class AnimalType(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
     pets = db.relationship('Pet', backref='animal_type', lazy=True)
-    vets = db.relationship('Vet', backref='animal_type', lazy=True)
 
 
 pet_illness = db.Table('pet_illness',

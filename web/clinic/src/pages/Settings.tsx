@@ -6,8 +6,7 @@ import { useHistory } from 'react-router-dom';
 import { changeClinicInfo, SettingsData } from '../utils/user';
 import { authContext } from '../store/auth';
 import { userContext } from '../store/user';
-
-const PHONE_REGEX = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+import { PHONE_REGEX } from '../constants';
 
 export default function Settings(): ReactElement {
   const history = useHistory();

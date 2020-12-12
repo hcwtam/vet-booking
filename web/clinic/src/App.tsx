@@ -8,6 +8,8 @@ import Logout from './pages/Logout';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import Signup from './pages/Signup';
+import Vet from './pages/Vets/Vet';
+import Vets from './pages/Vets/Vets';
 import { authContext } from './store/auth';
 import { UserProvider } from './store/user';
 
@@ -19,6 +21,8 @@ function App() {
         <Navbar />
         <Switch>
           <Route path="/profile" component={Profile} />
+          <Route path={'/vets/:id'} component={Vet} />
+          <Route path="/vets" component={Vets} />
           <Route path="/settings" component={Settings} />
           <Route path="/logout" component={Logout} />
           <Route path="/" component={Home} />
