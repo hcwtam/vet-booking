@@ -48,12 +48,29 @@ export default function Vet(): ReactElement {
               ))
             : 'none'}
         </li>
+        {vetData.schedule?.length
+          ? vetData.schedule
+              .sort((a, b) => a.dayOfWeek - b.dayOfWeek)
+              .map((workingHours) =>
+                workingHours.breakStartTime && workingHours.breakEndTime ? (
+                  <li
+                    key={workingHours.dayOfWeek}
+                  >{`Weekday ${workingHours.dayOfWeek}: | Working hours: ${workingHours.startTime}-${workingHours.endTime} | Break time: ${workingHours.breakStartTime}-${workingHours.breakEndTime}`}</li>
+                ) : (
+                  <li
+                    key={workingHours.dayOfWeek}
+                  >{`Weekday ${workingHours.dayOfWeek}: | Working hours: ${workingHours.startTime}-${workingHours.endTime}`}</li>
+                )
+              )
+          : 'none'}
       </ul>
       <button onClick={() => setShowForm(true)}>Change Vet Detail</button>
       {showForm ? (
         <Change
           firstName={vetData.firstName}
           lastName={vetData.lastName}
+          specialties={vetData.specialties || []}
+          schedule={vetData.schedule}
           id={id}
           vetsMutate={vetsMutate}
         />

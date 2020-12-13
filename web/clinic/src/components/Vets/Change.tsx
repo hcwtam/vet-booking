@@ -4,10 +4,13 @@ import * as Yup from 'yup';
 
 import { authContext } from '../../store/auth';
 import { VetChangeForm, changeVetInfo } from '../../utils/user';
+import { OpeningHoursType } from '../../store/user';
 
 interface Prop {
   firstName: string;
   lastName: string;
+  specialties: string[];
+  schedule: OpeningHoursType[];
   id: string;
   vetsMutate: (data?: any, shouldRevalidate?: boolean | undefined) => any;
 }
@@ -15,6 +18,8 @@ interface Prop {
 export default function Change({
   firstName,
   lastName,
+  specialties,
+  schedule,
   id,
   vetsMutate
 }: Prop): ReactElement {
@@ -22,12 +27,16 @@ export default function Change({
 
   const initialValues = {
     firstName,
-    lastName
+    lastName,
+    specialties,
+    schedule
   };
 
   const validationSchema = Yup.object({
     firstName: Yup.string().required('Required'),
-    lastName: Yup.string().required('Required')
+    lastName: Yup.string().required('Required'),
+    specialties: Yup.array(),
+    schedule: Yup.array()
   });
 
   const onSubmit = async (values: VetChangeForm) => {
@@ -60,6 +69,53 @@ export default function Change({
                   name="lastName"
                   placeholder="last name"
                 />
+                <div role="group" aria-labelledby="checkbox-group">
+                  Specialties:
+                  {['dog', 'cat', 'rabbit', 'turtle'].map((animalType) => (
+                    <label key={animalType}>
+                      <Field
+                        type="checkbox"
+                        name="specialties"
+                        value={animalType}
+                        checked={formik.values.specialties.includes(animalType)}
+                      />
+                      {animalType}
+                    </label>
+                  ))}
+                </div>
+                <div role="group">
+                  Working Hours:
+                  {schedule
+                    .sort((a, b) => a.dayOfWeek - b.dayOfWeek)
+                    .map(({ dayOfWeek }) => (
+                      <div key={dayOfWeek}>
+                        <label key={dayOfWeek}>
+                          <h4>{`Weekday ${dayOfWeek}`}</h4>
+                          start time
+                          <Field
+                            type="time"
+                            name={`schedule.${dayOfWeek}.startTime`}
+                          />
+                          break start time
+                          <Field
+                            type="time"
+                            name={`schedule.${dayOfWeek}.breakStartTime`}
+                          />
+                          break end time
+                          <Field
+                            type="time"
+                            name={`schedule.${dayOfWeek}.breakEndTime`}
+                          />
+                          end time
+                          <Field
+                            type="time"
+                            name={`schedule.${dayOfWeek}.endTime`}
+                          />
+                        </label>
+                        <br />
+                      </div>
+                    ))}
+                </div>
                 <button
                   type="submit"
                   disabled={

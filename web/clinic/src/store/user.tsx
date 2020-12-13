@@ -46,6 +46,7 @@ export type VetType = {
   lastName: string;
   phone?: string;
   specialties?: string[];
+  schedule: OpeningHoursType[];
 };
 
 const INIT_USERTYPE = {
