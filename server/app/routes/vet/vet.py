@@ -4,7 +4,7 @@ from flask import Blueprint, jsonify, request
 from app import db
 from app.helper import token_required
 from app.models import Vet, Clinic, Pet, vet_clinic
-from app.routes.vet.helper import find_specialty
+from app.routes.vet.helper import find_specialty, find_vet_schedule
 
 vet_bp = Blueprint('vet_api', __name__, url_prefix='/vet')
 
@@ -31,9 +31,24 @@ def create_vet(_):
 
             new_vet.specialties.append(specialty)
 
+    # opening hours, if input for the day empty, treat as closed on that day
+    if data['schedule']:
+        # Monday is 0, Tuesday is 1 etc.
+        for index, week_of_day_input in enumerate(data['schedule']):
+            if week_of_day_input:
+                working_hours = find_vet_schedule(new_vet.id, index)
+                if "startTime" in week_of_day_input:
+                    working_hours.start_time = week_of_day_input['startTime']
+                if "breakStartTime" in week_of_day_input:
+                    working_hours.break_start_time = week_of_day_input['breakStartTime']
+                if "breakEndTime" in week_of_day_input:
+                    working_hours.break_end_time = week_of_day_input['breakEndTime']
+                if "endTime" in week_of_day_input:
+                    working_hours.end_time = week_of_day_input['endTime']
+
     db.session.commit()
 
-    return jsonify({'message': 'New pet created!'})
+    return jsonify({'message': 'New vet created!'})
 
 
 # update vet info
@@ -63,7 +78,6 @@ def get_vets(current_user):
 
     output = []
 
-    print(vets)
     for vet in vets:
         specialties = []
         for specialty in vet.specialties:

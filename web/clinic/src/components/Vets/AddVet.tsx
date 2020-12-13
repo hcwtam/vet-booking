@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 import { addVet, AddVetForm } from '../../utils/user';
 import { authContext } from '../../store/auth';
 import { userContext } from '../../store/user';
-import { PHONE_REGEX } from '../../constants';
+import { DEFAULT_TIMETABLE, PHONE_REGEX } from '../../constants';
 
 interface Prop {
   vetsMutate: (data?: any, shouldRevalidate?: boolean | undefined) => any;
@@ -21,7 +21,8 @@ export default function AddVet({ vetsMutate }: Prop): ReactElement {
     lastName: '',
     phone: '',
     clinicId: clinic.id,
-    specialties: []
+    specialties: [],
+    schedule: DEFAULT_TIMETABLE
   };
 
   const validationSchema = Yup.object({
@@ -29,7 +30,8 @@ export default function AddVet({ vetsMutate }: Prop): ReactElement {
     lastName: Yup.string().required('Required'),
     phone: Yup.string().matches(PHONE_REGEX, 'Phone number is not valid'),
     clinicId: Yup.string().required('Required'),
-    specialties: Yup.array()
+    specialties: Yup.array(),
+    schedule: Yup.array()
   });
 
   const onSubmit = async (values: AddVetForm) => {
@@ -85,6 +87,49 @@ export default function AddVet({ vetsMutate }: Prop): ReactElement {
                     <Field type="checkbox" name="specialties" value="turtle" />
                     Turtle
                   </label>
+                </div>
+                <div role="group">
+                  Opening Hours:
+                  {[
+                    'Monday',
+                    'Tuesday',
+                    'Wednesday',
+                    'Thursday',
+                    'Friday',
+                    'Saturday',
+                    'Sunday'
+                  ].map((dayOfWeek, index) => (
+                    <div key={dayOfWeek}>
+                      <label key={dayOfWeek}>
+                        <h4>{dayOfWeek}</h4>
+                        start time
+                        <Field
+                          type="time"
+                          name={`schedule.${index}.startTime`}
+                          value="09:00"
+                        />
+                        break start time
+                        <Field
+                          type="time"
+                          name={`schedule.${index}.breakStartTime`}
+                          value="13:00"
+                        />
+                        break end time
+                        <Field
+                          type="time"
+                          name={`schedule.${index}.breakEndTime`}
+                          value="14:00"
+                        />
+                        end time
+                        <Field
+                          type="time"
+                          name={`schedule.${index}.endTime`}
+                          value="18:00"
+                        />
+                      </label>
+                    </div>
+                  ))}
+                  <br />
                 </div>
                 <button
                   type="submit"

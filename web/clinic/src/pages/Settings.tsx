@@ -5,19 +5,8 @@ import { useHistory } from 'react-router-dom';
 
 import { changeClinicInfo, SettingsData } from '../utils/user';
 import { authContext } from '../store/auth';
-import { OpeningHoursType, userContext } from '../store/user';
-import { PHONE_REGEX } from '../constants';
-
-const DEFAULT_TIMETABLE: OpeningHoursType[] = [];
-for (let i = 0; i < 7; i++) {
-  DEFAULT_TIMETABLE.push({
-    dayOfWeek: i,
-    startTime: '09:00',
-    breakStartTime: '13:00',
-    breakEndTime: '14:00',
-    endTime: '18:00'
-  });
-}
+import { userContext } from '../store/user';
+import { DEFAULT_TIMETABLE, PHONE_REGEX } from '../constants';
 
 export default function Settings(): ReactElement {
   const history = useHistory();

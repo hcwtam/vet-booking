@@ -48,7 +48,18 @@ class Vet(db.Model):
     phone = db.Column(db.String(20), nullable=False)
     specialties = db.relationship('AnimalType', secondary=vet_animalType, backref='vets', lazy=True)
     clinic = db.relationship('Clinic', secondary=vet_clinic, backref='vets', lazy=True)
+    schedule = db.relationship('VetSchedule', backref='vet', lazy=True)
     bookings = db.relationship('Booking', backref='vet', lazy=True)
+
+
+class VetSchedule(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    vet_id = db.Column(db.Integer, db.ForeignKey('vet.id'), nullable=False)
+    day_of_week = db.Column(db.Integer, nullable=False)
+    start_time = db.Column(db.String(20))
+    break_start_time = db.Column(db.String(20))
+    break_end_time = db.Column(db.String(20))
+    end_time = db.Column(db.String(20))
 
 
 class Staff(db.Model):
