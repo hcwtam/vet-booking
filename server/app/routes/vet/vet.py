@@ -12,7 +12,7 @@ vet_bp = Blueprint('vet_api', __name__, url_prefix='/vet')
 # Create vet profile
 @vet_bp.route('', methods=['POST'])
 @token_required
-def create_vet(current_user):
+def create_vet(_):
     data = request.get_json()
 
     clinic = Clinic.query.filter_by(id=data['clinicId']).first()
@@ -36,24 +36,22 @@ def create_vet(current_user):
     return jsonify({'message': 'New pet created!'})
 
 
-# update pet info
-@vet_bp.route('/<pet_id>', methods=['PUT'])
+# update vet info
+@vet_bp.route('/<vet_id>', methods=['PUT'])
 @token_required
-def change_pet_info(current_user, pet_id):
-    pet = Pet.query.filter_by(id=pet_id).first()
+def change_vet_info(_, vet_id):
+    vet = Vet.query.filter_by(id=vet_id).first()
 
-    if not pet:
-        return jsonify({'message': 'No such pet found!'})
-
-    if pet.owner_id is not current_user.id:
-        return jsonify({'message': 'You are not this pet\'s owner.'})
+    if not vet:
+        return jsonify({'message': 'No such vet found!'})
 
     data = request.get_json()
 
-    pet.name = data['name']
+    vet.first_name = data['firstName']
+    vet.last_name = data['lastName']
     db.session.commit()
 
-    return jsonify({'message': 'Pet information has been updated.'})
+    return jsonify({'message': 'Vet information has been updated.'})
 
 
 # Get vets info
@@ -81,19 +79,16 @@ def get_vets(current_user):
     return jsonify({'vets': output})
 
 
-# Delete pet
-@vet_bp.route('/<pet_id>', methods=['DELETE'])
+# Delete vet
+@vet_bp.route('/<vet_id>', methods=['DELETE'])
 @token_required
-def delete_pet(current_user, pet_id):
-    pet = Pet.query.filter_by(id=pet_id).first()
+def delete_pet(_, vet_id):
+    vet = Vet.query.filter_by(id=vet_id).first()
 
-    if not pet:
-        return jsonify({'message': 'No such pet found!'})
+    if not vet:
+        return jsonify({'message': 'No such vet found!'})
 
-    if pet.owner_id is not current_user.id:
-        return jsonify({'message': 'You are not this pet\'s owner.'})
-
-    db.session.delete(pet)
+    db.session.delete(vet)
     db.session.commit()
 
-    return jsonify({'message': 'The pet has been deleted!'})
+    return jsonify({'message': 'The vet has been deleted!'})

@@ -5,8 +5,19 @@ import { useHistory } from 'react-router-dom';
 
 import { changeClinicInfo, SettingsData } from '../utils/user';
 import { authContext } from '../store/auth';
-import { userContext } from '../store/user';
+import { OpeningHoursType, userContext } from '../store/user';
 import { PHONE_REGEX } from '../constants';
+
+const DEFAULT_TIMETABLE: OpeningHoursType[] = [];
+for (let i = 0; i < 7; i++) {
+  DEFAULT_TIMETABLE.push({
+    dayOfWeek: i,
+    startTime: '09:00',
+    breakStartTime: '13:00',
+    breakEndTime: '14:00',
+    endTime: '18:00'
+  });
+}
 
 export default function Settings(): ReactElement {
   const history = useHistory();
@@ -21,8 +32,10 @@ export default function Settings(): ReactElement {
     phone: '',
     contactEmail: '',
     animalTypes: [],
-    openingHours: []
+    openingHours: DEFAULT_TIMETABLE
   };
+
+  console.log(initialValues);
 
   const validationSchema = Yup.object({
     name: Yup.string(),
@@ -107,29 +120,25 @@ export default function Settings(): ReactElement {
                         <Field
                           type="time"
                           name={`openingHours.${index}.startTime`}
-                          min="09:00"
-                          max="18:00"
+                          value="09:00"
                         />
                         break start time
                         <Field
                           type="time"
                           name={`openingHours.${index}.breakStartTime`}
-                          min="09:00"
-                          max="18:00"
+                          value="13:00"
                         />
                         break end time
                         <Field
                           type="time"
                           name={`openingHours.${index}.breakEndTime`}
-                          min="09:00"
-                          max="18:00"
+                          value="14:00"
                         />
                         end time
                         <Field
                           type="time"
                           name={`openingHours.${index}.endTime`}
-                          min="09:00"
-                          max="18:00"
+                          value="18:00"
                         />
                       </label>
                       <br />
@@ -138,9 +147,7 @@ export default function Settings(): ReactElement {
                 </div>
                 <button
                   type="submit"
-                  disabled={
-                    !formik.dirty || !formik.isValid || formik.isSubmitting
-                  }
+                  disabled={!formik.isValid || formik.isSubmitting}
                 >
                   Submit
                 </button>

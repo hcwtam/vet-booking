@@ -11,9 +11,9 @@ export default function Vets(): ReactElement {
   let vetsData;
 
   if (vets)
-    vetsData = vets.map(({ id, firstName }) => (
+    vetsData = vets.map(({ id, lastName }) => (
       <button key={id} onClick={() => history.push(`/vets/${id}`)}>
-        <h2>{firstName}</h2>
+        <h2>Dr. {lastName}</h2>
       </button>
     ));
 

@@ -48,17 +48,19 @@ export default function Profile(): ReactElement {
                 : 'none'}
             </li>
             {clinic.animalTypes.length
-              ? clinic.openingHours.map((openingHour) =>
-                  openingHour.breakStartTime && openingHour.breakEndTime ? (
-                    <li
-                      key={openingHour.dayOfWeek}
-                    >{`Weekday ${openingHour.dayOfWeek}: | Opening hours: ${openingHour.startTime}-${openingHour.endTime} | Break time: ${openingHour.breakStartTime}-${openingHour.breakEndTime}`}</li>
-                  ) : (
-                    <li
-                      key={openingHour.dayOfWeek}
-                    >{`Weekday ${openingHour.dayOfWeek}: | Opening hours: ${openingHour.startTime}-${openingHour.endTime}`}</li>
+              ? clinic.openingHours
+                  .sort((a, b) => a.dayOfWeek - b.dayOfWeek)
+                  .map((openingHour) =>
+                    openingHour.breakStartTime && openingHour.breakEndTime ? (
+                      <li
+                        key={openingHour.dayOfWeek}
+                      >{`Weekday ${openingHour.dayOfWeek}: | Opening hours: ${openingHour.startTime}-${openingHour.endTime} | Break time: ${openingHour.breakStartTime}-${openingHour.breakEndTime}`}</li>
+                    ) : (
+                      <li
+                        key={openingHour.dayOfWeek}
+                      >{`Weekday ${openingHour.dayOfWeek}: | Opening hours: ${openingHour.startTime}-${openingHour.endTime}`}</li>
+                    )
                   )
-                )
               : 'none'}
           </ul>
         </>
