@@ -105,11 +105,13 @@ def get_vets(current_user):
 # Delete vet
 @vet_bp.route('/<vet_id>', methods=['DELETE'])
 @token_required
-def delete_pet(_, vet_id):
+def delete_vet(_, vet_id):
     vet = Vet.query.filter_by(id=vet_id).first()
 
     if not vet:
         return jsonify({'message': 'No such vet found!'})
+
+    db.session.query(VetSchedule).filter(VetSchedule.vet_id == vet_id).delete()
 
     db.session.delete(vet)
     db.session.commit()

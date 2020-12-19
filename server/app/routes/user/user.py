@@ -53,7 +53,7 @@ def create_user():
         {'uid': user.uid, 'exp': datetime.datetime.utcnow() + datetime.timedelta(days=30)},
         os.environ.get("SECRET_KEY"))
 
-    return jsonify({'token': token.decode('UTF-8'), 'message': 'New user created!'})
+    return jsonify({'token': token.decode('UTF-8'), 'userType': data['userType'], 'message': 'New user created!'})
 
 
 # login
