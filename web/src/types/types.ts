@@ -43,3 +43,8 @@ export type VetType = {
   specialties?: string[];
   schedule: OpeningHoursType[];
 };
+
+export type BookingType = {
+  datetime: Date;
+  petId: number;
+};

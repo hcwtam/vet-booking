@@ -16,6 +16,7 @@ import Vets from './pages/Vets/Vets';
 import OwnerSettings from './pages/OwnerSettings';
 import ClinicSettings from './pages/ClinicSettings';
 import ClinicSignup from './pages/ClinicSignup';
+import Booking from './pages/Booking';
 
 function App() {
   const { token, userType } = useContext(authContext);
@@ -24,6 +25,7 @@ function App() {
   if (userType === 'owner')
     appWithUser = (
       <>
+        <Route path="/booking" component={Booking} />
         <Route path="/profile" component={Profile} />
         <Route path={'/pets/:id'} component={Pet} />
         <Route exact path="/pets" component={Pets} />
