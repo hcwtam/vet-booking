@@ -26,6 +26,39 @@ def create_booking(current_user):
     if clash:
         return jsonify({'message': 'Conflict with existing bookings'}), 400
 
+    # check if input time is within vet working hours
+    start_date = datetime.datetime.fromtimestamp(start_time / 1e3)
+    end_date = datetime.datetime.fromtimestamp(end_time / 1e3)
+    # Monday is 1
+    weekday = start_date.isoweekday()
+    # Sunday is 7 in Python, 0 in JS
+    if weekday == 7:
+        weekday = 0
+    vet_working_hour = VetSchedule.query.filter(VetSchedule.day_of_week == weekday).first()
+    if vet_working_hour is None:
+        return jsonify({'message': 'Vet is not working on this day'}), 400
+    vet_start_hour = vet_working_hour.start_time[:2]
+    vet_start_minute = vet_working_hour.start_time[3:]
+    vet_break_start_hour = vet_working_hour.break_start_time[:2]
+    vet_break_start_minute = vet_working_hour.break_start_time[3:]
+    vet_break_end_hour = vet_working_hour.break_end_time[:2]
+    vet_break_end_minute = vet_working_hour.break_end_time[3:]
+    vet_end_hour = vet_working_hour.end_time[:2]
+    vet_end_minute = vet_working_hour.end_time[3:]
+
+    # compare in minutes
+    vet_start_time = int(vet_start_hour) * 60 + int(vet_start_minute)
+    vet_break_start_time = int(vet_break_start_hour) * 60 + int(vet_break_start_minute)
+    vet_break_end_time = int(vet_break_end_hour) * 60 + int(vet_break_end_minute)
+    vet_end_time = int(vet_end_hour) * 60 + int(vet_end_minute)
+
+    booking_start_time = start_date.hour * 60 + start_date.minute
+    booking_end_time = booking_start_time + 15
+
+    if not ((vet_start_time <= booking_start_time and vet_break_start_time >= booking_end_time)
+            or (vet_break_end_time <= booking_start_time and vet_end_time >= booking_end_time)):
+        return jsonify({'message': 'Not within vet working hour'}), 400
+
     # add booking to db
     new_time_slot = TimeSlot(start_time=start_time,
                              end_time=end_time,
