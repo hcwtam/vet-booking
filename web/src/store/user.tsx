@@ -23,7 +23,8 @@ const INIT_USERTYPE = {
   lastName: '',
   email: '',
   username: '',
-  userType: ''
+  userType: '',
+  petOwnerId: ''
 };
 
 const INIT_CLINICTYPE = {

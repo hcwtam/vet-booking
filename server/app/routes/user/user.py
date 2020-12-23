@@ -102,16 +102,21 @@ def change_user_detail(current_user):
 @token_required
 def get_user_profile(current_user):
     user = User.query.filter_by(uid=current_user.uid).first()
-
     if not user:
         return jsonify({'message': 'No user found!'})
+
+    pet_owner = PetOwner.query.filter_by(user_id=user.uid).first()
+    pet_owner_id = None
+    if pet_owner:
+        pet_owner_id = pet_owner.id
 
     user_data = {'uid': user.uid,
                  'firstName': user.first_name,
                  'lastName': user.last_name,
                  'email': user.email,
                  'username': user.username,
-                 'userType': user.user_type}
+                 'userType': user.user_type,
+                 'petOwnerId': pet_owner_id}
 
     # update last login depending on the time of getting user info
     user.last_login = datetime.datetime.now()

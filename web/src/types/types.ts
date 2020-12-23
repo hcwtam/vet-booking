@@ -5,6 +5,7 @@ export type UserType = {
   email: string;
   username: string;
   userType: string;
+  petOwnerId?: string;
 };
 
 export type PetType = {
@@ -42,9 +43,11 @@ export type VetType = {
   phone?: string;
   specialties?: string[];
   schedule: OpeningHoursType[];
+  clinic: ClinicType;
 };
 
 export type BookingType = {
-  datetime: Date;
+  datetime: number;
   petId: number;
+  vetId: number;
 };

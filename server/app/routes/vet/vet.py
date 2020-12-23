@@ -1,10 +1,10 @@
-# Pet routes
+# Vet routes
 from flask import Blueprint, jsonify, request
 
 from app import db
 from app.helper import token_required
-from app.models import Vet, Clinic, Pet, vet_clinic, VetSchedule
-from app.routes.vet.helper import find_specialty, find_vet_schedule, set_new_schedule
+from app.models import Vet, Clinic, vet_clinic, VetSchedule
+from app.routes.vet.helper import find_specialty, set_new_schedule
 
 vet_bp = Blueprint('vet_api', __name__, url_prefix='/vet')
 
@@ -80,6 +80,14 @@ def get_vets(current_user):
         for specialty in vet.specialties:
             specialties.append(specialty.name)
 
+        clinics = []
+        for clinicData in vet.clinic:
+            clinics.append({
+                'id': clinicData.id,
+                'name': clinicData.name
+            })
+        clinic = clinics[0]
+
         schedule = []
         vet_schedule = VetSchedule.query.filter_by(vet_id=vet.id).all()
         for working_hours in vet_schedule:
@@ -96,7 +104,8 @@ def get_vets(current_user):
                     'lastName': vet.last_name,
                     'phone': vet.phone,
                     'specialties': specialties,
-                    'schedule': schedule}
+                    'schedule': schedule,
+                    'clinic': clinic}
         output.append(vet_data)
 
     return jsonify({'vets': output})
@@ -117,3 +126,47 @@ def delete_vet(_, vet_id):
     db.session.commit()
 
     return jsonify({'message': 'The vet has been deleted!'})
+
+
+# get all vets
+@vet_bp.route('/all', methods=['GET'])
+@token_required
+def get_all_vets(_):
+    vets = Vet.query.all()
+
+    output = []
+
+    for vet in vets:
+        specialties = []
+        for specialty in vet.specialties:
+            specialties.append(specialty.name)
+
+        clinics = []
+        for clinicData in vet.clinic:
+            clinics.append({
+                'id': clinicData.id,
+                'name': clinicData.name
+            })
+        clinic = clinics[0]
+
+        schedule = []
+        vet_schedule = VetSchedule.query.filter_by(vet_id=vet.id).all()
+        for working_hours in vet_schedule:
+            schedule.append({
+                'dayOfWeek': working_hours.day_of_week,
+                'startTime': working_hours.start_time,
+                'breakStartTime': working_hours.break_start_time,
+                'breakEndTime': working_hours.break_end_time,
+                'endTime': working_hours.end_time,
+            })
+
+        vet_data = {'id': vet.id,
+                    'firstName': vet.first_name,
+                    'lastName': vet.last_name,
+                    'phone': vet.phone,
+                    'specialties': specialties,
+                    'schedule': schedule,
+                    'clinic': clinic}
+        output.append(vet_data)
+
+    return jsonify({'vets': output})

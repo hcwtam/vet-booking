@@ -16,6 +16,8 @@ class User(db.Model):
     pet_owners = db.relationship('PetOwner', backref='user', lazy=True)
     vets = db.relationship('Vet', backref='user', lazy=True)
     staffs = db.relationship('Staff', backref='user', lazy=True)
+    time_created = db.Column(db.DateTime(timezone=True), server_default=db.func.now())
+    time_updated = db.Column(db.DateTime(timezone=True), onupdate=db.func.now())
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -27,6 +29,7 @@ class PetOwner(db.Model):
     phone = db.Column(db.String(20))
     address = db.Column(db.String(120))
     pets = db.relationship('Pet', backref='pet_owner', lazy=True)
+    bookings = db.relationship('Booking', backref='pet_owner', lazy=True)
 
 
 vet_animalType = db.Table('vet_animalType',
@@ -50,6 +53,9 @@ class Vet(db.Model):
     clinic = db.relationship('Clinic', secondary=vet_clinic, backref='vets', lazy=True)
     schedule = db.relationship('VetSchedule', backref='vet', lazy=True)
     bookings = db.relationship('Booking', backref='vet', lazy=True)
+    time_slots = db.relationship('TimeSlot', backref='vet', lazy=True)
+    time_created = db.Column(db.DateTime(timezone=True), server_default=db.func.now())
+    time_updated = db.Column(db.DateTime(timezone=True), onupdate=db.func.now())
 
 
 class VetSchedule(db.Model):
@@ -85,6 +91,8 @@ class Clinic(db.Model):
     bookings = db.relationship('Booking', backref='clinic', lazy=True)
     staffs = db.relationship('Staff', backref='clinic', lazy=True)
     opening_hours = db.relationship('OpeningHours', backref='clinic', lazy=True)
+    time_created = db.Column(db.DateTime(timezone=True), server_default=db.func.now())
+    time_updated = db.Column(db.DateTime(timezone=True), onupdate=db.func.now())
 
 
 class OpeningHours(db.Model):
@@ -119,6 +127,8 @@ class Pet(db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey('pet_owner.id'), nullable=False)
     illnesses = db.relationship('Illness', secondary=pet_illness, backref='pets', lazy=True)
     bookings = db.relationship('Booking', backref='pet', lazy=True)
+    time_created = db.Column(db.DateTime(timezone=True), server_default=db.func.now())
+    time_updated = db.Column(db.DateTime(timezone=True), onupdate=db.func.now())
 
     def __repr__(self):
         return '<Pet {}>'.format(self.name)
@@ -133,13 +143,17 @@ class Illness(db.Model):
 class Booking(db.Model):
     booking_number = db.Column(db.Integer, primary_key=True)
     pet_id = db.Column(db.Integer, db.ForeignKey('pet.id'), nullable=False)
+    owner_id = db.Column(db.Integer, db.ForeignKey('pet_owner.id'), nullable=False)
     time_slot_id = db.Column(db.Integer, db.ForeignKey('time_slot.id'), nullable=False)
     vet_id = db.Column(db.Integer, db.ForeignKey('vet.id'), nullable=False)
     clinic_id = db.Column(db.Integer, db.ForeignKey('clinic.id'), nullable=False)
+    time_created = db.Column(db.DateTime(timezone=True), server_default=db.func.now())
+    time_updated = db.Column(db.DateTime(timezone=True), onupdate=db.func.now())
 
 
 class TimeSlot(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    start_time = db.Column(db.DateTime, nullable=False)
-    end_time = db.Column(db.DateTime, nullable=False)
+    start_time = db.Column(db.Integer, nullable=False)
+    end_time = db.Column(db.Integer, nullable=False)
     booking = db.relationship('Booking', backref='time_slot', lazy=True)
+    vet_id = db.Column(db.Integer, db.ForeignKey('vet.id'), nullable=False)
