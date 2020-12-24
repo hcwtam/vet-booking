@@ -2,17 +2,17 @@ import React, { ReactElement, useContext, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
-import { authContext } from '../store/auth';
-import { postBooking } from '../utils/booking';
-import { userContext } from '../store/user';
+import { authContext } from '../../store/auth';
+import { postBooking } from '../../utils/booking';
+import { userContext } from '../../store/user';
 import useSWR from 'swr';
-import { VetType } from '../types/types';
+import { VetType } from '../../types/types';
 
 const TOMORROW_9_AM = new Date();
 TOMORROW_9_AM.setDate(TOMORROW_9_AM.getDate() + 1);
 TOMORROW_9_AM.setHours(9, 0, 0, 0);
 
-export default function Booking(): ReactElement {
+export default function Bookings(): ReactElement {
   const { token } = useContext(authContext);
   const [{ pets }] = useContext(userContext);
   const { data } = useSWR(token ? ['vet/all', token] : null);

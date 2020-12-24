@@ -1,6 +1,12 @@
 import React, { ReactElement, createContext, useContext } from 'react';
 import useSWR from 'swr';
-import { UserType, PetType, ClinicType, VetType } from '../types/types';
+import {
+  UserType,
+  PetType,
+  ClinicType,
+  VetType,
+  BookingType
+} from '../types/types';
 import { authContext } from './auth';
 
 interface Props {
@@ -8,12 +14,19 @@ interface Props {
 }
 
 type UserContext = [
-  { user: UserType; pets: PetType[]; clinic: ClinicType; vets: VetType[] },
+  {
+    user: UserType;
+    pets: PetType[];
+    clinic: ClinicType;
+    vets: VetType[];
+    bookings: BookingType[];
+  },
   {
     userMutate: (data?: any, shouldRevalidate?: boolean | undefined) => any;
     petsMutate: (data?: any, shouldRevalidate?: boolean | undefined) => any;
     clinicMutate: (data?: any, shouldRevalidate?: boolean | undefined) => any;
     vetsMutate: (data?: any, shouldRevalidate?: boolean | undefined) => any;
+    bookingsMutate: (data?: any, shouldRevalidate?: boolean | undefined) => any;
   }
 ];
 
@@ -42,13 +55,15 @@ const userContext = createContext<UserContext>([
     user: INIT_USERTYPE,
     pets: [] as PetType[],
     clinic: INIT_CLINICTYPE,
-    vets: [] as VetType[]
+    vets: [] as VetType[],
+    bookings: [] as BookingType[]
   },
   {
     userMutate: () => null,
     petsMutate: () => null,
     clinicMutate: () => null,
-    vetsMutate: () => null
+    vetsMutate: () => null,
+    bookingsMutate: () => null
   }
 ]);
 
@@ -71,6 +86,9 @@ function UserProvider({ children }: Props): ReactElement {
   const { data: vetsData, mutate: vetsMutate } = useSWR(
     token && userType === 'clinic' ? ['vet', token] : null
   );
+  const { data: bookingsData, mutate: bookingsMutate } = useSWR(
+    token && userType === 'owner' ? ['booking', token] : null
+  );
 
   let user = INIT_USERTYPE;
   if (userData) user = userData.data.user;
@@ -86,11 +104,16 @@ function UserProvider({ children }: Props): ReactElement {
     vets = vetsData.data.vets;
   }
 
+  let bookings: BookingType[] = [];
+  if (bookingsData) {
+    bookings = bookingsData.data.bookings;
+  }
+
   return (
     <Provider
       value={[
-        { user, pets, clinic, vets },
-        { userMutate, petsMutate, clinicMutate, vetsMutate }
+        { user, pets, clinic, vets, bookings },
+        { userMutate, petsMutate, clinicMutate, vetsMutate, bookingsMutate }
       ]}
     >
       {children}

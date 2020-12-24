@@ -10,7 +10,7 @@ export default function Navbar(): ReactElement {
     navbarWithUser = (
       <div>
         <Link to="/">Home</Link>
-        <Link to="/booking">Booking</Link>
+        <Link to="/bookings">Booking</Link>
         <Link to="/profile">Profile</Link>
         <Link to="/pets">Pets</Link>
         <Link to="/settings">Settings</Link>

@@ -47,7 +47,15 @@ export type VetType = {
 };
 
 export type BookingType = {
-  datetime: number;
+  datetime?: number;
+  id?: number;
   petId: number;
+  ownerId?: number;
   vetId: number;
+  vetLastName?: string;
+  clinicId: string;
+  clinicName?: string;
+  clinicNumber?: string;
+  startTime?: string;
+  endTime?: string;
 };
