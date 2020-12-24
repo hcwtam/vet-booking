@@ -80,6 +80,36 @@ def create_booking(current_user):
     return jsonify({'message': 'New booking created!'})
 
 
+# Get bookings info
+@booking_bp.route('', methods=['GET'])
+@token_required
+def get_bookings(current_user):
+    pet_owner = PetOwner.query.filter_by(user_id=current_user.uid).first()
+    bookings = Booking.query.filter_by(owner_id=pet_owner.id).all()
+
+    output = []
+
+    for booking in bookings:
+        vet = Vet.query.filter_by(id=booking.vet_id).first()
+        clinic = Clinic.query.filter_by(id=booking.clinic_id).first()
+        time_slot = TimeSlot.query.filter_by(id=booking.time_slot_id).first()
+
+        booking_data = {'id': booking.booking_number,
+                        'petId': booking.pet_id,
+                        'ownerId': booking.owner_id,
+                        'vetId': vet.id,
+                        'vetLastName': vet.last_name,
+                        'clinicId': clinic.id,
+                        'clinicName': clinic.name,
+                        'clinicNumber': clinic.phone,
+                        'startTime': time_slot.start_time,
+                        'endTime': time_slot.end_time}
+        output.append(booking_data)
+
+    return jsonify({'bookings': output})
+
+
+# TODO
 # update booking info
 @booking_bp.route('/<vet_id>', methods=['PUT'])
 @token_required
@@ -104,42 +134,6 @@ def change_booking_info(_, vet_id):
     db.session.commit()
 
     return jsonify({'message': 'Vet information has been updated.'})
-
-
-# Get bookings info
-@booking_bp.route('', methods=['GET'])
-@token_required
-def get_bookings(current_user):
-    clinic = Clinic.query.filter_by(user_id=current_user.uid).first()
-    vets = Vet.query.join(vet_clinic).join(Clinic).filter(vet_clinic.c.clinic_id == clinic.id).all()
-
-    output = []
-
-    for vet in vets:
-        specialties = []
-        for specialty in vet.specialties:
-            specialties.append(specialty.name)
-
-        schedule = []
-        vet_schedule = VetSchedule.query.filter_by(vet_id=vet.id).all()
-        for working_hours in vet_schedule:
-            schedule.append({
-                'dayOfWeek': working_hours.day_of_week,
-                'startTime': working_hours.start_time,
-                'breakStartTime': working_hours.break_start_time,
-                'breakEndTime': working_hours.break_end_time,
-                'endTime': working_hours.end_time,
-            })
-
-        vet_data = {'id': vet.id,
-                    'firstName': vet.first_name,
-                    'lastName': vet.last_name,
-                    'phone': vet.phone,
-                    'specialties': specialties,
-                    'schedule': schedule}
-        output.append(vet_data)
-
-    return jsonify({'vets': output})
 
 
 # Delete booking
