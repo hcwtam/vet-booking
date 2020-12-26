@@ -4,7 +4,6 @@ import 'react-datepicker/dist/react-datepicker.css';
 
 import { authContext } from '../../store/auth';
 import { postBooking } from '../../utils/booking';
-import { userContext } from '../../store/user';
 import useSWR from 'swr';
 import { VetType } from '../../types/types';
 
@@ -12,15 +11,13 @@ const TOMORROW_9_AM = new Date();
 TOMORROW_9_AM.setDate(TOMORROW_9_AM.getDate() + 1);
 TOMORROW_9_AM.setHours(9, 0, 0, 0);
 
-export default function Bookings(): ReactElement {
-  const { token } = useContext(authContext);
-  const [{ pets }] = useContext(userContext);
-  const { data } = useSWR(token ? ['vet/all', token] : null);
+export default function GuestBooking(): ReactElement {
+  const { data } = useSWR(['vet/all', '']);
 
   const [datetime, setDatetime] = useState<Date>(TOMORROW_9_AM);
   const [chosenVet, setChosenVet] = useState<number | null>(null);
   const [clinicId, setClinicId] = useState<string | null>(null);
-  const [chosenPet, setChosenPet] = useState<number | null>(null);
+  const [chosenPetType, setChosenPetType] = useState<string | null>(null);
 
   const handleDateChange = (date: Date) => {
     setDatetime(date);
@@ -29,11 +26,10 @@ export default function Bookings(): ReactElement {
   const confirmBooking = () => {
     const values = {
       datetime: datetime.getTime(),
-      petId: chosenPet as number,
       vetId: chosenVet as number,
       clinicId: clinicId as string
     };
-    postBooking(values, token as string);
+    postBooking(values);
   };
 
   let vets, vetsData;
@@ -53,19 +49,17 @@ export default function Bookings(): ReactElement {
     ));
   }
 
-  let petsData;
-  if (pets)
-    petsData = pets.map(({ id, name }) => (
-      <button key={id} onClick={() => setChosenPet(id)}>
-        <h2>{name}</h2>
-      </button>
-    ));
+  const petTypes = ['dog', 'cat', 'rabbit', 'turtle'].map((petType) => (
+    <button key={petType} onClick={() => setChosenPetType(petType)}>
+      <h2>{petType}</h2>
+    </button>
+  ));
 
   return (
     <div>
       <h1>Make an appointment</h1>
       <h2>1&#41; Select pet</h2>
-      {petsData}
+      {petTypes}
       <br />
       <h2>2&#41; Select vet</h2>
       {vetsData}
@@ -79,7 +73,7 @@ export default function Bookings(): ReactElement {
         dateFormat="Pp"
       />
       <br />
-      <button disabled={!chosenVet || !chosenPet} onClick={confirmBooking}>
+      <button disabled={!chosenVet || !chosenPetType} onClick={confirmBooking}>
         confirm
       </button>
     </div>

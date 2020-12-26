@@ -36,3 +36,7 @@ export type VetChangeForm = {
   firstName: string;
   lastName: string;
 };
+
+export type BookingChangeForm = {
+  datetime: number;
+};

@@ -1,5 +1,6 @@
 import React, { ReactElement, useContext } from 'react';
 import { useHistory } from 'react-router';
+import GuestBooking from '../components/Bookings/GuestBooking';
 import { userContext } from '../store/user';
 
 export default function Home(): ReactElement {
@@ -21,6 +22,7 @@ export default function Home(): ReactElement {
       <div>
         Welcome to Vet Booking System {user.userType && `for ${user.userType}`}
       </div>
+      {user.userType ? null : <GuestBooking />}
       {bookings.length ? (
         <>
           <br />
