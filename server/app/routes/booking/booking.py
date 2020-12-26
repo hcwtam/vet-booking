@@ -4,8 +4,9 @@ import datetime
 from flask import Blueprint, jsonify, request
 
 from app import db
-from app.helper import token_required
+from app.helper import token_required, token_optional
 from app.models import Vet, Clinic, Pet, vet_clinic, VetSchedule, TimeSlot, Booking, PetOwner
+from app.routes.booking.helper import get_weekday, check_vet_on_duty
 from app.routes.vet.helper import find_specialty, find_vet_schedule, set_new_schedule
 
 booking_bp = Blueprint('booking_api', __name__, url_prefix='/booking')
@@ -13,8 +14,8 @@ booking_bp = Blueprint('booking_api', __name__, url_prefix='/booking')
 
 # Create booking profile
 @booking_bp.route('', methods=['POST'])
-@token_required
-def create_booking(current_user):
+@token_optional
+def create_booking(current_user=None):
     data = request.get_json()
     start_time = data['datetime']
     # 900 * 1000 is 15 minutes
@@ -27,36 +28,14 @@ def create_booking(current_user):
         return jsonify({'message': 'Conflict with existing bookings'}), 400
 
     # check if input time is within vet working hours
-    start_date = datetime.datetime.fromtimestamp(start_time / 1e3)
-    end_date = datetime.datetime.fromtimestamp(end_time / 1e3)
-    # Monday is 1
-    weekday = start_date.isoweekday()
-    # Sunday is 7 in Python, 0 in JS
-    if weekday == 7:
-        weekday = 0
-    vet_working_hour = VetSchedule.query.filter(VetSchedule.day_of_week == weekday).first()
-    if vet_working_hour is None:
+    start_datetime = datetime.datetime.fromtimestamp(start_time / 1e3)
+    weekday = get_weekday(start_datetime)
+    vet_working_hours = VetSchedule.query.filter(VetSchedule.day_of_week == weekday).first()
+    if vet_working_hours is None:
         return jsonify({'message': 'Vet is not working on this day'}), 400
-    vet_start_hour = vet_working_hour.start_time[:2]
-    vet_start_minute = vet_working_hour.start_time[3:]
-    vet_break_start_hour = vet_working_hour.break_start_time[:2]
-    vet_break_start_minute = vet_working_hour.break_start_time[3:]
-    vet_break_end_hour = vet_working_hour.break_end_time[:2]
-    vet_break_end_minute = vet_working_hour.break_end_time[3:]
-    vet_end_hour = vet_working_hour.end_time[:2]
-    vet_end_minute = vet_working_hour.end_time[3:]
 
-    # compare in minutes
-    vet_start_time = int(vet_start_hour) * 60 + int(vet_start_minute)
-    vet_break_start_time = int(vet_break_start_hour) * 60 + int(vet_break_start_minute)
-    vet_break_end_time = int(vet_break_end_hour) * 60 + int(vet_break_end_minute)
-    vet_end_time = int(vet_end_hour) * 60 + int(vet_end_minute)
-
-    booking_start_time = start_date.hour * 60 + start_date.minute
-    booking_end_time = booking_start_time + 15
-
-    if not ((vet_start_time <= booking_start_time and vet_break_start_time >= booking_end_time)
-            or (vet_break_end_time <= booking_start_time and vet_end_time >= booking_end_time)):
+    vet_on_duty = check_vet_on_duty(start_datetime, vet_working_hours)
+    if not vet_on_duty:
         return jsonify({'message': 'Not within vet working hour'}), 400
 
     # add booking to db
@@ -66,10 +45,15 @@ def create_booking(current_user):
     db.session.add(new_time_slot)
     db.session.flush()
     db.session.refresh(new_time_slot)
-    pet_owner = PetOwner.query.filter_by(user_id=current_user.uid).first()
+    pet_id = ''
+    pet_owner_id = ''
+    if current_user:
+        pet_owner = PetOwner.query.filter_by(user_id=current_user.uid).first()
+        pet_owner_id = pet_owner.id
+        pet_id = data['petId']
     new_booking = Booking(
-        pet_id=data['petId'],
-        owner_id=pet_owner.id,
+        pet_id=pet_id,
+        owner_id=pet_owner_id,
         time_slot_id=new_time_slot.id,
         vet_id=data['vetId'],
         clinic_id=data['clinicId']
@@ -110,44 +94,60 @@ def get_bookings(current_user):
 
 
 # TODO
-# update booking info
-@booking_bp.route('/<vet_id>', methods=['PUT'])
+# change booking time
+@booking_bp.route('/<booking_number>', methods=['PUT'])
 @token_required
-def change_booking_info(_, vet_id):
-    vet = Vet.query.filter_by(id=vet_id).first()
+def change_booking_time(_, booking_number):
+    booking = Booking.query.filter_by(booking_number=booking_number).first()
 
-    if not vet:
-        return jsonify({'message': 'No such vet found!'})
+    if not booking:
+        return jsonify({'message': 'No such booking found!'})
 
     data = request.get_json()
 
-    vet.first_name = data['firstName']
-    vet.last_name = data['lastName']
-    # search for specialties from input and append
-    if data['specialties']:
-        vet.specialties = []
-        for specialty_name in data['specialties']:
-            specialty = find_specialty(specialty_name)
-            vet.specialties.append(specialty)
-    if data['schedule']:
-        set_new_schedule(data['schedule'], vet_id)
+    start_time = data['datetime']
+    # 900 * 1000 is 15 minutes
+    end_time = start_time + 900 * 1000
+
+    # check if input time clashes with existing timeslot
+    clash = TimeSlot.query.filter(TimeSlot.vet_id == booking.vet_id, TimeSlot.start_time <= start_time,
+                                  TimeSlot.end_time >= end_time).first()
+    if clash:
+        return jsonify({'message': 'Conflict with existing bookings'}), 400
+
+    # check if input time is within vet working hours
+    start_datetime = datetime.datetime.fromtimestamp(start_time / 1e3)
+    weekday = get_weekday(start_datetime)
+    vet_working_hours = VetSchedule.query.filter(VetSchedule.day_of_week == weekday).first()
+    if vet_working_hours is None:
+        return jsonify({'message': 'Vet is not working on this day'}), 400
+
+    vet_on_duty = check_vet_on_duty(start_datetime, vet_working_hours)
+    if not vet_on_duty:
+        return jsonify({'message': 'Not within vet working hour'}), 400
+
+    # update booking from db
+    time_slot = TimeSlot.query.filter_by(id=booking.time_slot_id).first()
+    time_slot.start_time = start_time
+    time_slot.end_time = end_time
+    # trigger time_update field
+    Booking.query.filter_by(booking_number=booking_number).update({'time_slot_id': time_slot.id})
     db.session.commit()
 
-    return jsonify({'message': 'Vet information has been updated.'})
+    return jsonify({'message': 'Booking time has been updated.'})
 
 
 # Delete booking
-@booking_bp.route('/<vet_id>', methods=['DELETE'])
+@booking_bp.route('/<booking_number>', methods=['DELETE'])
 @token_required
-def delete_booking(_, vet_id):
-    vet = Vet.query.filter_by(id=vet_id).first()
+def delete_booking(_, booking_number):
+    booking = Booking.query.filter_by(booking_number=booking_number).first()
 
-    if not vet:
+    if not booking:
         return jsonify({'message': 'No such vet found!'})
 
-    db.session.query(VetSchedule).filter(VetSchedule.vet_id == vet_id).delete()
-
-    db.session.delete(vet)
+    db.session.query(TimeSlot).filter(TimeSlot.id == booking.time_slot_id).delete()
+    db.session.delete(booking)
     db.session.commit()
 
-    return jsonify({'message': 'The vet has been deleted!'})
+    return jsonify({'message': 'This booking has been cancelled!'})

@@ -26,3 +26,26 @@ def token_required(f):
         return f(current_user, *args, **kwargs)
 
     return decorated
+
+
+def token_optional(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = None
+
+        if 'x-access-token' in request.headers:
+            token = request.headers['x-access-token']
+
+        if not token:
+            return f(*args, **kwargs)
+
+        # noinspection PyBroadException
+        try:
+            data = jwt.decode(token, os.environ.get("SECRET_KEY"))
+            current_user = User.query.filter_by(uid=data['uid']).first()
+        except:
+            return jsonify({'message': 'Token is invalid!'}), 401
+
+        return f(current_user, *args, **kwargs)
+
+    return decorated

@@ -142,8 +142,8 @@ class Illness(db.Model):
 
 class Booking(db.Model):
     booking_number = db.Column(db.Integer, primary_key=True)
-    pet_id = db.Column(db.Integer, db.ForeignKey('pet.id'), nullable=False)
-    owner_id = db.Column(db.Integer, db.ForeignKey('pet_owner.id'), nullable=False)
+    pet_id = db.Column(db.Integer, db.ForeignKey('pet.id'))
+    owner_id = db.Column(db.Integer, db.ForeignKey('pet_owner.id'))
     time_slot_id = db.Column(db.Integer, db.ForeignKey('time_slot.id'), nullable=False)
     vet_id = db.Column(db.Integer, db.ForeignKey('vet.id'), nullable=False)
     clinic_id = db.Column(db.Integer, db.ForeignKey('clinic.id'), nullable=False)

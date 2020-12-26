@@ -130,8 +130,7 @@ def delete_vet(_, vet_id):
 
 # get all vets
 @vet_bp.route('/all', methods=['GET'])
-@token_required
-def get_all_vets(_):
+def get_all_vets():
     vets = Vet.query.all()
 
     output = []
