@@ -18,6 +18,12 @@ import ClinicSettings from './pages/ClinicSettings';
 import ClinicSignup from './pages/ClinicSignup';
 import Bookings from './pages/Bookings/Bookings';
 import Booking from './pages/Bookings/Booking';
+import styled from 'styled-components';
+import Footer from './components/Footer';
+
+const Main = styled.div`
+  width: 100%;
+`;
 
 function App() {
   const { token, userType } = useContext(authContext);
@@ -52,13 +58,14 @@ function App() {
 
   return token && userType ? (
     <UserProvider>
-      <>
+      <Main>
         <Navbar />
         <Switch>{appWithUser}</Switch>
-      </>
+        <Footer />
+      </Main>
     </UserProvider>
   ) : (
-    <>
+    <Main>
       <Navbar />
       <Switch>
         <Route path="/signup" component={Signup} />
@@ -66,7 +73,8 @@ function App() {
         <Route path="/login" component={Login} />
         <Route path="/" component={Home} />
       </Switch>
-    </>
+      <Footer />
+    </Main>
   );
 }
 

@@ -1,7 +1,12 @@
 import React, { ReactElement, useContext } from 'react';
 import { useHistory } from 'react-router';
+import styled from 'styled-components';
 import GuestBooking from '../components/Bookings/GuestBooking';
 import { userContext } from '../store/user';
+
+const Container = styled.div`
+  width: 100%;
+`;
 
 export default function Home(): ReactElement {
   const [{ user, bookings }] = useContext(userContext);
@@ -18,10 +23,7 @@ export default function Home(): ReactElement {
       </button>
     ));
   return (
-    <>
-      <div>
-        Welcome to Vet Booking System {user.userType && `for ${user.userType}`}
-      </div>
+    <Container>
       {user.userType ? null : <GuestBooking />}
       {bookings.length ? (
         <>
@@ -30,6 +32,6 @@ export default function Home(): ReactElement {
           {bookingsData}
         </>
       ) : null}
-    </>
+    </Container>
   );
 }
