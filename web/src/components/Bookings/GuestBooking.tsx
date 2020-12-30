@@ -6,6 +6,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import styled from 'styled-components';
 
 import backgroundImage from '../../assets/background.jpg';
+import { useHistory } from 'react-router';
 
 // styles
 const Main = styled.main`
@@ -174,6 +175,7 @@ export default function GuestBooking(): ReactElement {
   const [datetime, setDatetime] = useState<Date | null>(null);
   const [chosenPetType, setChosenPetType] = useState<string | null>(null);
   const [showSeperation, setShowSeperation] = useState<boolean>(true);
+  let history = useHistory();
 
   const handleDateChange = (date: Date) => {
     setDatetime(date);
@@ -181,14 +183,15 @@ export default function GuestBooking(): ReactElement {
 
   const searchVets = () => {
     //TODO search vets
-    console.log(datetime);
+    history.push(
+      `/search?datetime=${datetime?.getTime()}&animalType=${chosenPetType}`
+    );
   };
 
   const petTypes = ['dog', 'cat', 'rabbit', 'turtle'].map((petType, index) => (
-    <>
+    <React.Fragment key={petType}>
       {index === 0 ? null : <Menu.Divider />}
       <Menu.Item
-        key={petType}
         onClick={() => setChosenPetType(petType)}
         style={{
           padding: '10px 30px',
@@ -199,7 +202,7 @@ export default function GuestBooking(): ReactElement {
       >
         <h2>{petType[0].toUpperCase() + petType.slice(1)}</h2>
       </Menu.Item>
-    </>
+    </React.Fragment>
   ));
 
   const menu = (

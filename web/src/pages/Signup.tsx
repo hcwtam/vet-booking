@@ -105,6 +105,8 @@ export default function Signup(): ReactElement {
         Have an account?{`  `}
         <Link to="/login">Log in</Link>
       </div>
+      <br />
+      <Link to="/clinicsignup">Sign up for clinic</Link>
     </>
   );
 }

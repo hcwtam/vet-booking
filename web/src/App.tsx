@@ -20,6 +20,7 @@ import Bookings from './pages/Bookings/Bookings';
 import Booking from './pages/Bookings/Booking';
 import styled from 'styled-components';
 import Footer from './components/Footer';
+import Search from './pages/Search';
 
 const Main = styled.div`
   width: 100%;
@@ -71,6 +72,7 @@ function App() {
         <Route path="/signup" component={Signup} />
         <Route path="/clinicsignup" component={ClinicSignup} />
         <Route path="/login" component={Login} />
+        <Route path="/search" component={Search} />
         <Route path="/" component={Home} />
       </Switch>
       <Footer />
