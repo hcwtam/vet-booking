@@ -1,9 +1,12 @@
 # Vet routes
+import datetime
+
 from flask import Blueprint, jsonify, request
 
 from app import db
 from app.helper import token_required
-from app.models import Vet, Clinic, vet_clinic, VetSchedule
+from app.models import Vet, Clinic, vet_clinic, VetSchedule, AnimalType, vet_animalType, TimeSlot
+from app.routes.booking.helper import get_weekday, check_vet_on_duty
 from app.routes.vet.helper import find_specialty, set_new_schedule
 
 vet_bp = Blueprint('vet_api', __name__, url_prefix='/vet')
@@ -66,7 +69,7 @@ def change_vet_info(_, vet_id):
     return jsonify({'message': 'Vet information has been updated.'})
 
 
-# Get vets info
+# Get vets info in same clinic as "clinic" user
 @vet_bp.route('', methods=['GET'])
 @token_required
 def get_vets(current_user):
@@ -165,6 +168,66 @@ def get_all_vets():
                     'phone': vet.phone,
                     'specialties': specialties,
                     'schedule': schedule,
+                    'clinic': clinic}
+        output.append(vet_data)
+
+    return jsonify({'vets': output})
+
+
+# Get filtered vets info for guests
+@vet_bp.route('/guest', methods=['GET'])
+def get_vets_for_guest():
+    start_time = int(request.args.get('datetime'))
+    # 900 * 1000 is 15 minutes
+    end_time = start_time + 900 * 1000
+    animal_type = request.args.get('animalType')
+
+    # Get animal type ID
+    animal_type_data = AnimalType.query.filter_by(name=animal_type).first()
+
+    # Get all vets that can treat that animal type
+    vets = Vet.query.join(vet_animalType).join(AnimalType) \
+        .filter(vet_animalType.c.animalType_id == animal_type_data.id).all()
+
+    output = []
+
+    for vet in vets:
+        # check if input time clashes with existing timeslot
+        clash = TimeSlot.query.filter(TimeSlot.vet_id == vet.id, TimeSlot.start_time <= start_time,
+                                      TimeSlot.end_time >= end_time).first()
+        if clash:
+            continue
+
+        # check if input time is within vet working hours
+        start_datetime = datetime.datetime.fromtimestamp(start_time / 1e3)
+        weekday = get_weekday(start_datetime)
+        vet_working_hours = VetSchedule.query.filter(VetSchedule.day_of_week == weekday).first()
+        if vet_working_hours is None:
+            continue
+
+        vet_on_duty = check_vet_on_duty(start_datetime, vet_working_hours)
+        if not vet_on_duty:
+            continue
+
+        specialties = []
+        for specialty in vet.specialties:
+            specialties.append(specialty.name)
+
+        clinics = []
+        for clinicData in vet.clinic:
+            clinics.append({
+                'id': clinicData.id,
+                'name': clinicData.name,
+                'address': clinicData.address,
+                'phone': clinicData.phone,
+                'email': clinicData.contact_email})
+        clinic = clinics[0]
+
+        vet_data = {'id': vet.id,
+                    'firstName': vet.first_name,
+                    'lastName': vet.last_name,
+                    'phone': vet.phone,
+                    'specialties': specialties,
                     'clinic': clinic}
         output.append(vet_data)
 

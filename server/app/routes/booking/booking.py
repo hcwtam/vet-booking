@@ -5,9 +5,8 @@ from flask import Blueprint, jsonify, request
 
 from app import db
 from app.helper import token_required, token_optional
-from app.models import Vet, Clinic, Pet, vet_clinic, VetSchedule, TimeSlot, Booking, PetOwner
+from app.models import Vet, Clinic, VetSchedule, TimeSlot, Booking, PetOwner
 from app.routes.booking.helper import get_weekday, check_vet_on_duty
-from app.routes.vet.helper import find_specialty, find_vet_schedule, set_new_schedule
 
 booking_bp = Blueprint('booking_api', __name__, url_prefix='/booking')
 
