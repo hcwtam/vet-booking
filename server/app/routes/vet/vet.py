@@ -185,9 +185,13 @@ def get_vets_for_guest():
     # Get animal type ID
     animal_type_data = AnimalType.query.filter_by(name=animal_type).first()
 
-    # Get all vets that can treat that animal type
-    vets = Vet.query.join(vet_animalType).join(AnimalType) \
-        .filter(vet_animalType.c.animalType_id == animal_type_data.id).all()
+    if request.args.get('vetId'):
+        # get info of specific vet
+        vets = Vet.query.filter_by(id=request.args.get('vetId')).all()
+    else:
+        # Get all vets that can treat that animal type
+        vets = Vet.query.join(vet_animalType).join(AnimalType) \
+            .filter(vet_animalType.c.animalType_id == animal_type_data.id).all()
 
     output = []
 
@@ -223,12 +227,24 @@ def get_vets_for_guest():
                 'email': clinicData.contact_email})
         clinic = clinics[0]
 
+        schedule = []
+        vet_schedule = VetSchedule.query.filter_by(vet_id=vet.id).all()
+        for working_hours in vet_schedule:
+            schedule.append({
+                'dayOfWeek': working_hours.day_of_week,
+                'startTime': working_hours.start_time,
+                'breakStartTime': working_hours.break_start_time,
+                'breakEndTime': working_hours.break_end_time,
+                'endTime': working_hours.end_time,
+            })
+
         vet_data = {'id': vet.id,
                     'firstName': vet.first_name,
                     'lastName': vet.last_name,
                     'phone': vet.phone,
                     'specialties': specialties,
-                    'clinic': clinic}
+                    'clinic': clinic,
+                    'schedule': schedule}
         output.append(vet_data)
 
     return jsonify({'vets': output})
