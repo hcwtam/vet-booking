@@ -182,7 +182,6 @@ export default function GuestBooking(): ReactElement {
   };
 
   const searchVets = () => {
-    //TODO search vets
     history.push(
       `/search?datetime=${datetime?.getTime()}&animalType=${chosenPetType}`
     );

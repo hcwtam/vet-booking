@@ -8,10 +8,13 @@ import {
 import React, { ReactElement } from 'react';
 import { VetType } from '../../types/types';
 import styled from 'styled-components';
+import { useHistory } from 'react-router';
 
 interface Props {
   vet: VetType;
   weekday: number | null;
+  animalType: string | null;
+  datetime: string;
 }
 
 const Subtitle = styled.div`
@@ -26,11 +29,42 @@ const Description = styled.div`
   margin-bottom: 5px;
 `;
 
-export default function VetCard({ vet, weekday }: Props): ReactElement {
-  const { firstName, lastName } = vet;
+const Specialty = styled.span`
+  margin-left: 10px;
+  font-size: 0.9rem;
+  color: #7e7e7e;
+  border: 1px solid #7e7e7e;
+  border-radius: 5px;
+  font-weight: normal;
+  padding: 1px 5px;
+`;
+
+export default function VetCard({
+  vet,
+  weekday,
+  animalType,
+  datetime
+}: Props): ReactElement {
+  const history = useHistory();
+  let specialties = null;
+  if (vet.specialties && vet.specialties.length) {
+    specialties = vet.specialties.map((specialty) => (
+      <Specialty key={specialty}>{specialty}</Specialty>
+    ));
+  }
+
+  const handleClick = () => {
+    history.push(
+      `/detail?datetime=${datetime}&animalType=${animalType}&vetId=${vet.id}`
+    );
+  };
 
   return (
-    <Card style={{ width: '90%', maxWidth: 700, marginTop: 10 }} hoverable>
+    <Card
+      style={{ width: '100%', marginTop: 10 }}
+      hoverable
+      onClick={handleClick}
+    >
       <Skeleton loading={false} avatar active>
         <Card.Meta
           avatar={
@@ -40,9 +74,18 @@ export default function VetCard({ vet, weekday }: Props): ReactElement {
             />
           }
           title={
-            <span
-              style={{ fontSize: '1.2rem', color: '#1d154c', fontWeight: 600 }}
-            >{`Dr. ${firstName} ${lastName}`}</span>
+            <div
+              style={{
+                fontSize: '1.2rem',
+                color: '#1d154c',
+                fontWeight: 600,
+                display: 'flex',
+                justifyContent: 'space-between'
+              }}
+            >
+              {`Dr. ${vet.firstName} ${vet.lastName}`}
+              <div>{specialties}</div>
+            </div>
           }
           description={
             <span>
@@ -53,7 +96,7 @@ export default function VetCard({ vet, weekday }: Props): ReactElement {
                 </Icon>
                 {vet.clinic.address}
               </Description>
-              <Subtitle>Visting hours</Subtitle>
+              <Subtitle>Visiting hours</Subtitle>
               <Description>
                 <Icon>
                   <ClockCircleOutlined />
