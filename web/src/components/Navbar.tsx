@@ -19,6 +19,9 @@ const Nav = styled.nav`
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 999;
   a {
     color: rgba(82, 82, 82, 0.85);
     font-weight: 600;
