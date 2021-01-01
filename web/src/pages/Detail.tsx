@@ -2,13 +2,22 @@ import Avatar from 'antd/lib/avatar/avatar';
 import React, { ReactElement, useEffect } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
+import moment from 'moment';
 import useSWR from 'swr';
 import { VetType } from '../types/types';
-import { UserOutlined } from '@ant-design/icons';
+import {
+  UserOutlined,
+  CalendarOutlined,
+  ClockCircleOutlined,
+  EnvironmentOutlined,
+  PhoneOutlined
+} from '@ant-design/icons';
+import { Button } from 'antd';
 
 const Container = styled.div`
   margin: 0 auto;
   width: 100%;
+  max-width: 1200px;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -16,7 +25,7 @@ const Container = styled.div`
 
 const Content = styled.article`
   width: 60%;
-  margin: 30px;
+  margin: 0 30px 30px;
 `;
 
 const VetCard = styled.div`
@@ -43,6 +52,20 @@ const BookingCard = styled.div`
   margin: 30px;
 `;
 
+const BookingList = styled.ul`
+  padding: 0 10px;
+  list-style: none;
+`;
+
+const BookingItem = styled.li`
+  margin: 40px 0;
+  font-size: 1.1rem;
+`;
+
+const BookingInfo = styled.span`
+  margin-left: 30px;
+`;
+
 export default function Detail(): ReactElement {
   const history = useHistory();
   const location = useLocation();
@@ -50,6 +73,14 @@ export default function Detail(): ReactElement {
   const datetime = params.get('datetime');
   const animalType = params.get('animalType');
   const vetId = params.get('vetId');
+
+  // for booking card
+  let date, time;
+  if (datetime) {
+    date = moment.unix(+datetime / 1000).format('LL');
+    time = moment.unix(+datetime / 1000).format('LT');
+  }
+
   const { data } = useSWR<{ data: { vets: VetType[] } }>(
     datetime && animalType && vetId
       ? [
@@ -89,7 +120,42 @@ export default function Detail(): ReactElement {
           {`In 2005 he opened Fitzpatrick Referrals, the UK’s pre-eminent and largest dedicated small animal orthopaedic and neuro-surgical facility in Surrey, employing over 250 veterinary professionals and comprising state of the art surgical, diagnostic and rehabilitation facilities.`}
         </Paragraph>
       </Content>
-      <BookingCard></BookingCard>
+      <BookingCard>
+        <h2
+          style={{ fontWeight: 600 }}
+        >{`Appointment with Dr. ${vet?.lastName}`}</h2>
+        <BookingList>
+          <BookingItem>
+            <CalendarOutlined />
+            <BookingInfo>{date}</BookingInfo>
+          </BookingItem>
+          <BookingItem>
+            <ClockCircleOutlined />
+            <BookingInfo>{time}</BookingInfo>
+          </BookingItem>
+          <BookingItem>
+            <EnvironmentOutlined />
+            <BookingInfo>{vet?.clinic.address}</BookingInfo>
+          </BookingItem>
+          <BookingItem>
+            <PhoneOutlined />
+            <BookingInfo>{vet?.phone}</BookingInfo>
+          </BookingItem>
+        </BookingList>
+        <Button
+          danger
+          type="primary"
+          size="large"
+          style={{
+            borderRadius: 8,
+            width: '100%',
+            height: 50,
+            fontWeight: 600
+          }}
+        >
+          Book now
+        </Button>
+      </BookingCard>
     </Container>
   );
 }
