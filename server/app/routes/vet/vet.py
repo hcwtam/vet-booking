@@ -42,6 +42,49 @@ def create_vet(_):
 
     return jsonify({'message': 'New vet created!'})
 
+# Get vet by vet_id
+@vet_bp.route('/<vet_id>', methods=['GET'])
+def get_vet_by_id(vet_id):
+    vet = Vet.query.filter_by(id=vet_id).first()
+
+    if not vet:
+        return jsonify({'message': 'No such vet found!'})
+
+    specialties = []
+    for specialty in vet.specialties:
+        specialties.append(specialty.name)
+
+    clinics = []
+    for clinicData in vet.clinic:
+        clinics.append({
+            'id': clinicData.id,
+            'name': clinicData.name,
+            'address': clinicData.address,
+            'phone': clinicData.phone,
+            'email': clinicData.contact_email})
+    clinic = clinics[0]
+
+    schedule = []
+    vet_schedule = VetSchedule.query.filter_by(vet_id=vet_id).all()
+    for working_hours in vet_schedule:
+        schedule.append({
+            'dayOfWeek': working_hours.day_of_week,
+            'startTime': working_hours.start_time,
+            'breakStartTime': working_hours.break_start_time,
+            'breakEndTime': working_hours.break_end_time,
+            'endTime': working_hours.end_time,
+        })
+
+    vet_data = {'id': vet.id,
+                'firstName': vet.first_name,
+                'lastName': vet.last_name,
+                'phone': vet.phone,
+                'specialties': specialties,
+                'clinic': clinic,
+                'schedule': schedule}
+
+    return jsonify({'vet': vet_data})
+
 
 # update vet info
 @vet_bp.route('/<vet_id>', methods=['PUT'])

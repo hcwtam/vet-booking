@@ -5,7 +5,7 @@ from flask import Blueprint, jsonify, request
 
 from app import db
 from app.helper import token_required, token_optional
-from app.models import Vet, Clinic, VetSchedule, TimeSlot, Booking, PetOwner
+from app.models import Vet, Clinic, VetSchedule, TimeSlot, Booking, PetOwner, AnimalType, Pet, vet_clinic
 from app.routes.booking.helper import get_weekday, check_vet_on_duty
 
 booking_bp = Blueprint('booking_api', __name__, url_prefix='/booking')
@@ -44,23 +44,40 @@ def create_booking(current_user=None):
     db.session.add(new_time_slot)
     db.session.flush()
     db.session.refresh(new_time_slot)
-    pet_id = ''
-    pet_owner_id = ''
     if current_user:
         pet_owner = PetOwner.query.filter_by(user_id=current_user.uid).first()
         pet_owner_id = pet_owner.id
         pet_id = data['petId']
+    # create PetOwner and Pet row for guest
+    else:
+        pet_owner = PetOwner(phone=data['phone'],
+                             email=data['email'])
+        animal_type = AnimalType.query.filter_by(name=data['animalType']).first()
+        db.session.add(pet_owner)
+        db.session.flush()
+        db.session.refresh(pet_owner)
+        pet = Pet(animal_id=animal_type.id,
+                  owner_id=pet_owner.id)
+        db.session.add(pet)
+        db.session.flush()
+        db.session.refresh(pet)
+        pet_owner_id = pet_owner.id
+        pet_id = pet.id
+
+    vet = Vet.query.filter_by(id=data['vetId']).first()
     new_booking = Booking(
         pet_id=pet_id,
         owner_id=pet_owner_id,
         time_slot_id=new_time_slot.id,
         vet_id=data['vetId'],
-        clinic_id=data['clinicId']
+        clinic_id=vet.clinic[0].id
     )
     db.session.add(new_booking)
     db.session.commit()
 
-    return jsonify({'message': 'New booking created!'})
+    booking = Booking.query.filter_by(time_slot_id=new_time_slot.id).first()
+
+    return jsonify({'message': 'New booking created!', 'bookingNumber': booking.booking_number})
 
 
 # Get bookings info
