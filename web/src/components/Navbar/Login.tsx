@@ -1,12 +1,25 @@
 import React, { ReactElement, useContext, useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
+import styled from 'styled-components';
 
-import { login, LoginFormData } from '../utils/auth';
-import { authContext } from '../store/auth';
+import { login, LoginFormData } from '../../utils/auth';
+import { authContext } from '../../store/auth';
+import { Button } from 'antd';
+import { ModalContentType } from '../../types/types';
+import LinkButton from '../UI/LinkButton';
+import AntError from '../UI/AntError';
 
-export default function Login(): ReactElement {
+const Label = styled.label`
+  font-weight: 600;
+`;
+
+interface Props {
+  setModalContent: (content: ModalContentType) => void;
+}
+
+export default function Login({ setModalContent }: Props): ReactElement {
   const history = useHistory();
   const { setToken, setUserType } = useContext(authContext);
 
@@ -41,7 +54,6 @@ export default function Login(): ReactElement {
   return (
     <>
       <div>
-        <h1>Vet Booking</h1>
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -50,26 +62,45 @@ export default function Login(): ReactElement {
           {(formik) => {
             return (
               <Form>
+                <Label>Username</Label>
                 <Field
                   type="text"
                   label="Username"
                   name="username"
                   placeholder="Username"
+                  className="ant-input"
+                  style={{ marginBottom: 15 }}
                 />
+                <AntError name="username" />
+                <Label>Password</Label>
                 <Field
                   type="password"
                   label="Password"
                   name="password"
                   placeholder="Password"
+                  className="ant-input"
+                  style={{ marginBottom: 15 }}
                 />
-                <button
-                  type="submit"
+                <AntError name="password" />
+                <Button
+                  danger
+                  type="primary"
+                  htmlType="submit"
+                  size="large"
+                  style={{
+                    borderRadius: 8,
+                    width: '100%',
+                    height: 50,
+                    fontWeight: 600,
+                    marginTop: 20,
+                    marginBottom: 20
+                  }}
                   disabled={
                     !formik.dirty || !formik.isValid || formik.isSubmitting
                   }
                 >
                   Log In
-                </button>
+                </Button>
               </Form>
             );
           }}
@@ -78,7 +109,9 @@ export default function Login(): ReactElement {
       <div>{errorMessage}</div>
       <div>
         Don't have an account?{`  `}
-        <Link to="/signup">Sign up</Link>
+        <LinkButton onClick={() => setModalContent('Sign up')}>
+          Sign up
+        </LinkButton>
       </div>
     </>
   );

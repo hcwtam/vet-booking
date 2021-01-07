@@ -1,3 +1,4 @@
+import { AxiosResponse } from 'axios';
 import { BookingChangeForm } from '../types/forms';
 import { BookingType } from '../types/types';
 import axios from './axiosInstance';
@@ -9,6 +10,7 @@ export const postBooking = async (values: BookingType, token: string = '') => {
         'x-access-token': token
       }
     })
+    .then((res) => res as AxiosResponse<{ bookingNumber: string }>)
     .catch((err) => {
       console.log(err);
       return null;

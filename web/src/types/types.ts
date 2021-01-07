@@ -53,9 +53,14 @@ export type BookingType = {
   ownerId?: number;
   vetId: number;
   vetLastName?: string;
-  clinicId: string;
+  clinicId?: string;
   clinicName?: string;
   clinicNumber?: string;
   startTime?: string;
   endTime?: string;
+  email?: string;
+  phone?: string;
+  animalType?: string;
 };
+
+export type ModalContentType = 'Sign up' | 'Login' | 'Sign up (clinic)';

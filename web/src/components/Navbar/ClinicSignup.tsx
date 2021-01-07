@@ -2,10 +2,23 @@ import React, { ReactElement, useContext, useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { Link, useHistory } from 'react-router-dom';
-import { signup, SignupFormData } from '../utils/auth';
-import { authContext } from '../store/auth';
+import styled from 'styled-components';
+import { Button } from 'antd';
+import { signup, SignupFormData } from '../../utils/auth';
+import { authContext } from '../../store/auth';
+import { ModalContentType } from '../../types/types';
+import AntError from '../UI/AntError';
+import LinkButton from '../UI/LinkButton';
 
-export default function Signup(): ReactElement {
+interface Props {
+  setModalContent: (content: ModalContentType) => void;
+}
+
+const Label = styled.label`
+  font-weight: 600;
+`;
+
+export default function ClinicSignup({ setModalContent }: Props): ReactElement {
   const history = useHistory();
   const { setToken, setUserType } = useContext(authContext);
 
@@ -17,12 +30,12 @@ export default function Signup(): ReactElement {
     email: '',
     username: '',
     password: '',
-    userType: 'owner'
+    userType: 'clinic'
   };
 
   const validationSchema = Yup.object({
-    firstName: Yup.string().required('Required'),
-    lastName: Yup.string().required('Required'),
+    firstName: Yup.string(),
+    lastName: Yup.string(),
     email: Yup.string().email('Invalid email format').required('Required'),
     username: Yup.string().required('Required'),
     password: Yup.string().required('Required'),
@@ -47,8 +60,6 @@ export default function Signup(): ReactElement {
   return (
     <>
       <div>
-        <h1>Vet Booking</h1>
-        <h2>Sign up to start simple vet booking.</h2>
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -57,44 +68,55 @@ export default function Signup(): ReactElement {
           {(formik) => {
             return (
               <Form>
-                <Field
-                  type="text"
-                  label="First name"
-                  name="firstName"
-                  placeholder="First Name"
-                />
-                <Field
-                  type="text"
-                  label="Last name"
-                  name="lastName"
-                  placeholder="Last Name"
-                />
+                <Label>Email</Label>
                 <Field
                   type="email"
                   label="Email"
                   name="email"
                   placeholder="Email"
+                  className="ant-input"
+                  style={{ marginBottom: 15 }}
                 />
+                <AntError name="email" />
+                <Label>Username</Label>
                 <Field
                   type="text"
                   label="Username"
                   name="username"
                   placeholder="Username"
+                  className="ant-input"
+                  style={{ marginBottom: 15 }}
                 />
+                <AntError name="username" />
+                <Label>Password</Label>
                 <Field
                   type="password"
                   label="Password"
                   name="password"
                   placeholder="Password"
+                  className="ant-input"
+                  style={{ marginBottom: 15 }}
                 />
-                <button
-                  type="submit"
+                <AntError name="password" />
+                <Button
+                  danger
+                  type="primary"
+                  htmlType="submit"
+                  size="large"
+                  style={{
+                    borderRadius: 8,
+                    width: '100%',
+                    height: 50,
+                    fontWeight: 600,
+                    marginTop: 20,
+                    marginBottom: 20
+                  }}
                   disabled={
                     !formik.dirty || !formik.isValid || formik.isSubmitting
                   }
                 >
-                  Sign up
-                </button>
+                  Sign Up
+                </Button>
               </Form>
             );
           }}
@@ -103,10 +125,8 @@ export default function Signup(): ReactElement {
       <div>{errorMessage}</div>
       <div>
         Have an account?{`  `}
-        <Link to="/login">Log in</Link>
+        <LinkButton onClick={() => setModalContent('Login')}>Login</LinkButton>
       </div>
-      <br />
-      <Link to="/clinicsignup">Sign up for clinic</Link>
     </>
   );
 }

@@ -182,8 +182,11 @@ export default function GuestBooking(): ReactElement {
   };
 
   const searchVets = () => {
+    let datetimeString = datetime?.getTime().toString() as string;
+    const correctedDatetime =
+      datetimeString.slice(0, datetimeString.length - 4) + '0000';
     history.push(
-      `/search?datetime=${datetime?.getTime()}&animalType=${chosenPetType}`
+      `/search?datetime=${correctedDatetime}&animalType=${chosenPetType}`
     );
   };
 

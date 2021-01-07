@@ -1,5 +1,5 @@
 import Avatar from 'antd/lib/avatar/avatar';
-import React, { ReactElement, useEffect } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import moment from 'moment';
@@ -13,6 +13,7 @@ import {
   PhoneOutlined
 } from '@ant-design/icons';
 import { Button } from 'antd';
+import GuestBookModal from '../components/Bookings/GuestBookModal';
 
 const Container = styled.div`
   margin: 0 auto;
@@ -44,7 +45,6 @@ const Paragraph = styled.div`
 const BookingCard = styled.div`
   width: 40%;
   max-width: 400px;
-  height: 450px;
   border: 1px solid rgb(221, 221, 221);
   border-radius: 12px;
   padding: 24px;
@@ -67,6 +67,7 @@ const BookingInfo = styled.span`
 `;
 
 export default function Detail(): ReactElement {
+  const [isVisible, setIsVisible] = useState<boolean>(false);
   const history = useHistory();
   const location = useLocation();
   const params = new URLSearchParams(location.search);
@@ -81,16 +82,12 @@ export default function Detail(): ReactElement {
     time = moment.unix(+datetime / 1000).format('LT');
   }
 
-  const { data } = useSWR<{ data: { vets: VetType[] } }>(
-    datetime && animalType && vetId
-      ? [
-          `vet/guest?datetime=${datetime}&animalType=${animalType}&vetId=${vetId}`
-        ]
-      : null
+  const { data } = useSWR<{ data: { vet: VetType } }>(
+    datetime && animalType && vetId ? [`vet/${vetId}`] : null
   );
 
   let vet;
-  if (data && data.data.vets) vet = data.data.vets[0];
+  if (data && data.data.vet) vet = data.data.vet;
 
   useEffect(() => {
     if (!vetId || !datetime || !animalType) history.push('/');
@@ -146,6 +143,8 @@ export default function Detail(): ReactElement {
           danger
           type="primary"
           size="large"
+          onClick={() => setIsVisible(true)}
+          loading={isVisible}
           style={{
             borderRadius: 8,
             width: '100%',
@@ -156,6 +155,13 @@ export default function Detail(): ReactElement {
           Book now
         </Button>
       </BookingCard>
+      <GuestBookModal
+        isVisible={isVisible}
+        onCloseModal={() => setIsVisible(false)}
+        vetId={vetId as string}
+        datetime={datetime as string}
+        animalType={animalType as string}
+      />
     </Container>
   );
 }

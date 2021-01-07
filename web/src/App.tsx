@@ -1,21 +1,18 @@
 import React, { useContext } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
-import Navbar from './components/Navbar';
+import Navbar from './components/Navbar/Navbar';
 import Home from './pages/Home';
-import Login from './pages/Login';
 import Logout from './pages/Logout';
 import Pets from './pages/Pets/Pets';
 import Pet from './pages/Pets/Pet';
 import Profile from './pages/Profile';
-import Signup from './pages/Signup';
 import { authContext } from './store/auth';
 import { UserProvider } from './store/user';
 import Vet from './pages/Vets/Vet';
 import Vets from './pages/Vets/Vets';
 import OwnerSettings from './pages/OwnerSettings';
 import ClinicSettings from './pages/ClinicSettings';
-import ClinicSignup from './pages/ClinicSignup';
 import Bookings from './pages/Bookings/Bookings';
 import Booking from './pages/Bookings/Booking';
 import styled from 'styled-components';
@@ -70,9 +67,6 @@ function App() {
     <Main>
       <Navbar />
       <Switch>
-        <Route path="/signup" component={Signup} />
-        <Route path="/clinicsignup" component={ClinicSignup} />
-        <Route path="/login" component={Login} />
         <Route path="/search" component={Search} />
         <Route path="/detail" component={Detail} />
         <Route path="/" component={Home} />

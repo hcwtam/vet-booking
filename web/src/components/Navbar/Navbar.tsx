@@ -2,8 +2,11 @@ import React, { ReactElement, useContext } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
-import { authContext } from '../store/auth';
-import logo from '../assets/logo.png';
+import { authContext } from '../../store/auth';
+import logo from '../../assets/logo.png';
+import { useState } from 'react';
+import NavbarModal from './NavbarModal';
+import { ModalContentType } from '../../types/types';
 
 const Nav = styled.nav`
   background: linear-gradient(
@@ -84,6 +87,7 @@ const Button = styled.div`
   align-items: center;
   justify-content: center;
   opacity: 0.85;
+  cursor: pointer;
   transition: all 0.3s;
   &:hover {
     opacity: 1;
@@ -94,6 +98,10 @@ const Button = styled.div`
 
 export default function Navbar(): ReactElement {
   const { token, userType } = useContext(authContext);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [modalContent, setModalContent] = useState<ModalContentType | null>(
+    null
+  );
 
   let navbarWithUser = <></>;
   if (userType === 'owner')
@@ -131,13 +139,33 @@ export default function Navbar(): ReactElement {
         </Name>
       </Link>
       <ButtonsGroup>
-        <Link to="/signup">
-          <Button bg>Join now</Button>
-        </Link>
-        <Link to="/login">
-          <Button>Login</Button>
-        </Link>
+        <Button
+          bg
+          onClick={() => {
+            setShowModal(true);
+            setModalContent('Sign up');
+          }}
+        >
+          Join now
+        </Button>
+
+        <Button
+          onClick={() => {
+            setShowModal(true);
+            setModalContent('Login');
+          }}
+        >
+          Login
+        </Button>
       </ButtonsGroup>
+      <NavbarModal
+        showModal={showModal}
+        hideModal={() => setShowModal(false)}
+        modalTitle={modalContent}
+        setModalContent={(content: ModalContentType) =>
+          setModalContent(content)
+        }
+      />
     </Nav>
   );
 }
