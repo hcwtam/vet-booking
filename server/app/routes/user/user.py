@@ -38,8 +38,15 @@ def create_user():
 
     # create specific user type data
     if data['userType'] == 'owner':
-        user_type_detail = PetOwner(user_id=user_uid)
-        db.session.add(user_type_detail)
+        # check if new user has had guest booking
+        pet_owner = PetOwner.query.filter_by(email=data['email']).first()
+        if pet_owner:
+            pet_owner.email = data['email']
+            pet_owner.phone = data['phone']
+            pet_owner.user_id = user_uid
+        else:
+            user_type_detail = PetOwner(user_id=user_uid, email=data['email'])
+            db.session.add(user_type_detail)
 
     if data['userType'] == 'clinic':
         user_type_detail = Clinic(user_id=user_uid)
