@@ -41,13 +41,12 @@ export default function GuestBookModal({
       setIsSuccessful(true);
       localStorage.setItem('guestEmail', values.email);
       localStorage.setItem('guestPhone', values.phone);
-      localStorage.setItem('guestBookingNumber', res.data.bookingNumber);
     }
   };
 
   const onCancel = () => {
     onCloseModal();
-    if (isSuccessful) history.push('/');
+    if (isSuccessful) history.push('/continue');
   };
 
   const initialValues = {

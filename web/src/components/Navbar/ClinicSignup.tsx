@@ -1,7 +1,7 @@
 import React, { ReactElement, useContext, useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { Button } from 'antd';
 import { signup, SignupFormData } from '../../utils/auth';

@@ -9,6 +9,7 @@ export type SignupFormData = {
   firstName: string;
   lastName: string;
   email: string;
+  phone?: string;
   username: string;
   password: string;
   userType: string;

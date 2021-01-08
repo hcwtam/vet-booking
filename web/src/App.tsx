@@ -19,6 +19,7 @@ import styled from 'styled-components';
 import Footer from './components/Footer';
 import Search from './pages/Search';
 import Detail from './pages/Detail';
+import ContinueRegister from './pages/ContinueRegister';
 
 const Main = styled.div`
   width: 100%;
@@ -69,6 +70,7 @@ function App() {
       <Switch>
         <Route path="/search" component={Search} />
         <Route path="/detail" component={Detail} />
+        <Route path="/continue" component={ContinueRegister} />
         <Route path="/" component={Home} />
       </Switch>
       <Footer />
