@@ -26,6 +26,12 @@ def create_user():
     hashed_password = generate_password_hash(data['password'], method='sha256')
     user_uid = str(uuid.uuid4())
 
+    # check if user already exists
+    email_exists = User.query.filter_by(email=data['email']).first()
+    username_exists = User.query.filter_by(username=data['username']).first()
+    if email_exists or username_exists:
+        return jsonify({'message': 'Account exists.'})
+
     new_user = User(uid=user_uid,
                     first_name=data['firstName'],
                     last_name=data['lastName'],

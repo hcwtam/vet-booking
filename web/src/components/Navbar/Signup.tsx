@@ -52,7 +52,7 @@ export default function Signup({ setModalContent }: Props): ReactElement {
       setErrorMessage(
         res.error === 401
           ? 'Incorrect username or password.'
-          : 'Cannot login. Please try again.'
+          : 'Cannot sign up. Please try again.'
       );
     }
   };
