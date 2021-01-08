@@ -1,8 +1,9 @@
 import React, { ReactElement, useContext } from 'react';
-import { useHistory } from 'react-router';
 import styled from 'styled-components';
 import GuestBooking from '../components/Bookings/GuestBooking';
 import { userContext } from '../store/user';
+import { Timeline } from 'antd';
+import BookingCard from '../components/Overview/BookingCard';
 
 const Container = styled.div`
   width: 100%;
@@ -10,28 +11,28 @@ const Container = styled.div`
 
 export default function Home(): ReactElement {
   const [{ user, bookings }] = useContext(userContext);
-  const history = useHistory();
 
   let bookingsData;
   if (bookings.length)
     bookingsData = bookings.map((booking) => (
-      <button
-        key={booking.id}
-        onClick={() => history.push(`/bookings/${booking.id}`)}
-      >
-        {new Date(booking.startTime as string).toLocaleString()}
-      </button>
+      <Timeline.Item key={booking.id}>
+        <BookingCard booking={booking} />
+      </Timeline.Item>
     ));
-  return (
-    <Container>
-      {user.userType ? null : <GuestBooking />}
+  return user.userType ? (
+    <>
       {bookings.length ? (
-        <>
-          <br />
-          <h2>Upcoming Appointments:</h2>
+        <Timeline>
+          <h1>My Appointments</h1>
           {bookingsData}
-        </>
-      ) : null}
+        </Timeline>
+      ) : (
+        <></>
+      )}
+    </>
+  ) : (
+    <Container>
+      <GuestBooking />
     </Container>
   );
 }

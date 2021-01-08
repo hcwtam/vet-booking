@@ -11,22 +11,22 @@ import { useHistory } from 'react-router';
 // styles
 const Main = styled.main`
   width: 100%;
-  height: 575px;
+  height: calc(100vh - 165px);
   @media (min-width: 1400px) {
-    height: 625px;
+    height: 660px;
   }
 `;
 
 const Background = styled.div`
   width: 100%;
-  height: 600px;
+  height: 620px;
   position: absolute;
   top: 50px;
   left: 0;
   z-index: -1;
 
   @media (min-width: 1400px) {
-    height: 650px;
+    height: 680px;
   }
   img {
     height: 100%;

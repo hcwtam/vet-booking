@@ -9,14 +9,11 @@ import NavbarModal from './NavbarModal';
 import { ModalContentType } from '../../types/types';
 
 const Nav = styled.nav`
-  background: linear-gradient(
-    180deg,
-    rgb(255, 255, 255) 70%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  padding: 0 50px;
+  background: #fff;
+  box-shadow: 0 2px 8px #f0f1f2;
+  padding: 0 20px;
   width: 100%;
-  height: 75px;
+  height: 64px;
   font-size: 16px;
   display: flex;
   flex-wrap: wrap;
@@ -29,7 +26,6 @@ const Nav = styled.nav`
     color: rgba(82, 82, 82, 0.85);
     font-weight: 600;
     font-size: 15px;
-    padding-bottom: 10px;
   }
   a:hover {
     color: rgba(0, 0, 0, 0.85);
@@ -104,25 +100,22 @@ export default function Navbar(): ReactElement {
   );
 
   let navbarWithUser = <></>;
-  if (userType === 'owner')
+  if (userType)
     navbarWithUser = (
       <Nav>
-        <Link to="/">Home</Link>
-        <Link to="/bookings">Booking</Link>
-        <Link to="/profile">Profile</Link>
-        <Link to="/pets">Pets</Link>
-        <Link to="/settings">Settings</Link>
-        <Link to="/logout">Logout</Link>
-      </Nav>
-    );
-  if (userType === 'clinic')
-    navbarWithUser = (
-      <Nav>
-        <Link to="/">Home</Link>
-        <Link to="/profile">Profile</Link>
-        <Link to="/vets">Vets</Link>
-        <Link to="/settings">Settings</Link>
-        <Link to="/logout">Logout</Link>
+        <Link to="/">
+          <Name>
+            <Logo>
+              <img src={logo} alt="logo" />
+            </Logo>
+            <div>YouVet</div>
+          </Name>
+        </Link>
+        <ButtonsGroup>
+          <Link to="logout">
+            <Button>Logout</Button>
+          </Link>
+        </ButtonsGroup>
       </Nav>
     );
 

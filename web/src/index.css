@@ -15,8 +15,30 @@ body {
   color: rgb(34, 34, 34);
 }
 
+h1 {
+  font-weight: 600;
+  margin-bottom: 50px;
+  font-size: 1.5rem
+}
+
 .ant-picker {
   padding-left: 0;
+}
+
+.ant-menu-item-active a,
+.ant-menu-item-selected a,
+.ant-menu-item-selected :visited,
+.ant-menu-item-active{
+  color: #ff6600 !important;
+}
+
+.ant-menu-item-selected, .ant-menu-item:active{
+  background-color: #fff3f0 !important;
+  color: #ff6600 !important;
+}
+
+.ant-menu-vertical .ant-menu-item::after, .ant-menu-vertical-left .ant-menu-item::after, .ant-menu-vertical-right .ant-menu-item::after, .ant-menu-inline .ant-menu-item::after {
+  border-right: 3px solid #ff8d22 !important;
 }
 
 

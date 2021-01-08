@@ -20,8 +20,20 @@ import Footer from './components/Footer';
 import Search from './pages/Search';
 import Detail from './pages/Detail';
 import ContinueRegister from './pages/ContinueRegister';
+import Sidebar from './components/Sidebar/Sidebar';
 
 const Main = styled.div`
+  width: 100%;
+`;
+
+const Content = styled.div`
+  width: 100%;
+  min-height: calc(100vh - 164px);
+  display: flex;
+`;
+
+const Page = styled.div`
+  padding: 40px;
   width: 100%;
 `;
 
@@ -60,7 +72,12 @@ function App() {
     <UserProvider>
       <Main>
         <Navbar />
-        <Switch>{appWithUser}</Switch>
+        <Content>
+          <Sidebar />
+          <Page>
+            <Switch>{appWithUser}</Switch>
+          </Page>
+        </Content>
         <Footer />
       </Main>
     </UserProvider>
