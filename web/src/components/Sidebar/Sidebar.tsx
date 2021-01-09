@@ -1,3 +1,10 @@
+import {
+  CalendarOutlined,
+  HomeOutlined,
+  IdcardOutlined,
+  InfoCircleOutlined,
+  SettingOutlined
+} from '@ant-design/icons';
 import { Menu } from 'antd';
 import React, { ReactElement, useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
@@ -9,24 +16,29 @@ export default function Sidebar(): ReactElement {
 
   return userType === 'owner' ? (
     <Menu
-      style={{ width: 256 }}
+      style={{ width: 300 }}
       mode="inline"
       defaultSelectedKeys={['/']}
       selectedKeys={[location.pathname]}
     >
       <Menu.Item key="/">
+        <InfoCircleOutlined />
         <Link to="/">Overview</Link>
       </Menu.Item>
       <Menu.Item key="/bookings">
+        <CalendarOutlined />
         <Link to="/bookings">Book now</Link>
       </Menu.Item>
-      <Menu.Item key="/profile">
-        <Link to="/profile">Profile</Link>
-      </Menu.Item>
       <Menu.Item key="/pets">
+        <HomeOutlined />
         <Link to="/pets">Pets</Link>
       </Menu.Item>
+      <Menu.Item key="/profile">
+        <IdcardOutlined />
+        <Link to="/profile">Profile</Link>
+      </Menu.Item>
       <Menu.Item key="/settings">
+        <SettingOutlined />
         <Link to="/settings">Settings</Link>
       </Menu.Item>
     </Menu>

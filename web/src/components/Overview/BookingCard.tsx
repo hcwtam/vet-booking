@@ -14,11 +14,10 @@ const Card = styled.div`
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  background-color: #f6f6f6;
-  width: 100%;
-  max-width: 600px;
+  background-color: #ffffff;
+  width: 98%;
   height: 90px;
-  margin-bottom: 40px;
+  margin: 0 20px 40px;
   cursor: pointer;
   border-radius: 5px;
   box-shadow: 0 2px 8px #dfdfdf;

@@ -177,10 +177,6 @@ export default function GuestBooking(): ReactElement {
   const [showSeperation, setShowSeperation] = useState<boolean>(true);
   let history = useHistory();
 
-  const handleDateChange = (date: Date) => {
-    setDatetime(date);
-  };
-
   const searchVets = () => {
     let datetimeString = datetime?.getTime().toString() as string;
     const correctedDatetime =
@@ -246,7 +242,7 @@ export default function GuestBooking(): ReactElement {
               format={'YYYY-MM-DD h:mm a'}
               onChange={(moment) => {
                 if (moment) {
-                  handleDateChange(moment.toDate() as Date);
+                  setDatetime(moment.toDate() as Date);
                 }
               }}
             />

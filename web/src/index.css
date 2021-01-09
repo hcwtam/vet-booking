@@ -41,6 +41,22 @@ h1 {
   border-right: 3px solid #ff8d22 !important;
 }
 
+.ant-timeline-item-head {
+  width: 20px;
+  height: 20px;
+  top: 30px;
+}
+
+.ant-timeline-item-tail {
+  border-left: 2px solid #78a3cc;
+  top: 40px;
+  left: 9px;
+}
+
+.ant-btn.active {
+  color: #096dd9;
+  border-color: #096dd9;
+}
 
 @media (max-width: 500px) {
   .ant-picker-dropdown {

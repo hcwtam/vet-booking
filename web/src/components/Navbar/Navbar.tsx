@@ -73,7 +73,7 @@ const Button = styled.div`
   background: ${(props: ButtonProps) =>
     props.bg
       ? 'linear-gradient(10deg, #ffa55b 10% 30%, #ff895b 50% 100%)'
-      : 'transparent'};
+      : 'rgb(245, 245, 245)'};
   color: ${(props: ButtonProps) => (props.bg ? 'rgb(255, 255, 255)' : '')};
   width: 100px;
   height: 40px;
@@ -112,7 +112,7 @@ export default function Navbar(): ReactElement {
           </Name>
         </Link>
         <ButtonsGroup>
-          <Link to="logout">
+          <Link to="/logout">
             <Button>Logout</Button>
           </Link>
         </ButtonsGroup>

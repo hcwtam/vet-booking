@@ -9,6 +9,8 @@ const Foot = styled.footer`
   flex-direction: column-reverse;
   align-items: center;
   padding: 20px;
+
+  border-top: 1px solid #dbdbdb;
 `;
 
 export default function Footer(): ReactElement {

@@ -41,7 +41,7 @@ export default function Login({ setModalContent }: Props): ReactElement {
       setToken(res.token);
       setUserType(res.userType);
 
-      history.push('/profile');
+      history.push('/');
     } else {
       setErrorMessage(
         res.error === 401

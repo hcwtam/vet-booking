@@ -33,8 +33,9 @@ const Content = styled.div`
 `;
 
 const Page = styled.div`
-  padding: 40px;
+  padding: 0px 40px;
   width: 100%;
+  background-color: #efefef;
 `;
 
 function App() {

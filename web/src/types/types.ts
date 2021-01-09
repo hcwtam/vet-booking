@@ -52,10 +52,12 @@ export type BookingType = {
   petId?: number;
   ownerId?: number;
   vetId: number;
+  vetFirstName?: string;
   vetLastName?: string;
   clinicId?: string;
   clinicName?: string;
   clinicNumber?: string;
+  clinicAddress?: string;
   startTime?: string;
   endTime?: string;
   email?: string;
