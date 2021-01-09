@@ -98,18 +98,21 @@ def get_bookings(current_user):
                         'petId': booking.pet_id,
                         'ownerId': booking.owner_id,
                         'vetId': vet.id,
+                        'vetFirstName': vet.first_name,
                         'vetLastName': vet.last_name,
                         'clinicId': clinic.id,
                         'clinicName': clinic.name,
                         'clinicNumber': clinic.phone,
+                        'clinicAddress': clinic.address,
                         'startTime': time_slot.start_time,
-                        'endTime': time_slot.end_time}
+                        'endTime': time_slot.end_time,
+                        'email': clinic.contact_email,
+                        'phone': clinic.phone}
         output.append(booking_data)
 
     return jsonify({'bookings': output})
 
 
-# TODO
 # change booking time
 @booking_bp.route('/<booking_number>', methods=['PUT'])
 @token_required
