@@ -56,6 +56,12 @@ export default function Search(): ReactElement {
       : null
   );
 
+  const handleClick = (id: number) => {
+    history.push(
+      `/detail?datetime=${datetime}&animalType=${animalType}&vetId=${id}`
+    );
+  };
+
   let vetCards;
   if (data && data.data.vets) {
     vetCards = data.data.vets.map((vet: VetType) => (
@@ -63,8 +69,7 @@ export default function Search(): ReactElement {
         weekday={weekday}
         vet={vet}
         key={vet.id}
-        animalType={animalType}
-        datetime={datetime as string}
+        handleClick={() => handleClick(vet.id)}
       />
     ));
   }

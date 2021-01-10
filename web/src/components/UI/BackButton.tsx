@@ -8,13 +8,13 @@ const Button = styled.div`
   top: 72px;
   left: 240px;
   font-size: 14px;
-  border-radius: 10px;
+  border-radius: 5px;
   background-color: #fff;
   color: #777;
   padding: 5px 10px;
   cursor: pointer;
   transition: 0.2s;
-  box-shadow: 0 0 8px #ddd;
+  box-shadow: 0 0 2px #bbb;
 
   &:hover {
     transform: scale(1.05);

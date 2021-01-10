@@ -1,6 +1,6 @@
 import React, { ReactElement, useContext } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 import { authContext } from '../../store/auth';
 import logo from '../../assets/logo.png';
@@ -93,6 +93,7 @@ const Button = styled.div`
 `;
 
 export default function Navbar(): ReactElement {
+  const { push } = useHistory();
   const { token, userType } = useContext(authContext);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [modalContent, setModalContent] = useState<ModalContentType | null>(
@@ -112,6 +113,14 @@ export default function Navbar(): ReactElement {
           </Name>
         </Link>
         <ButtonsGroup>
+          <Button
+            bg
+            onClick={() => {
+              push('/bookings');
+            }}
+          >
+            Book now
+          </Button>
           <Link to="/logout">
             <Button>Logout</Button>
           </Link>

@@ -24,7 +24,8 @@ const Card = styled.div`
   transition: 0.1s;
 
   &:hover {
-    background-color: #fff8ec;
+    color: #ff6600;
+    box-shadow: 0 0 5px #ff6600;
   }
 `;
 

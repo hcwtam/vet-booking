@@ -8,13 +8,11 @@ import {
 import React, { ReactElement } from 'react';
 import { VetType } from '../../types/types';
 import styled from 'styled-components';
-import { useHistory } from 'react-router';
 
 interface Props {
   vet: VetType;
   weekday: number | null;
-  animalType: string | null;
-  datetime: string;
+  handleClick: () => void;
 }
 
 const Subtitle = styled.div`
@@ -42,22 +40,14 @@ const Specialty = styled.span`
 export default function VetCard({
   vet,
   weekday,
-  animalType,
-  datetime
+  handleClick
 }: Props): ReactElement {
-  const history = useHistory();
   let specialties = null;
   if (vet.specialties && vet.specialties.length) {
     specialties = vet.specialties.map((specialty) => (
       <Specialty key={specialty}>{specialty}</Specialty>
     ));
   }
-
-  const handleClick = () => {
-    history.push(
-      `/detail?datetime=${datetime}&animalType=${animalType}&vetId=${vet.id}`
-    );
-  };
 
   return (
     <Card
