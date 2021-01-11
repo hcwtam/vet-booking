@@ -1,6 +1,6 @@
 import React, { ReactElement, useContext, useState } from 'react';
 import styled from 'styled-components';
-import { Button, Steps } from 'antd';
+import { Button, Result, Steps } from 'antd';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -11,9 +11,16 @@ import useSWR from 'swr';
 import { PetType, VetType } from '../../types/types';
 import Content from '../../components/UI/Content';
 import { CatIcon, DogIcon, RabbitIcon, TurtleIcon } from '../../assets/Icons';
-import { PlusOutlined } from '@ant-design/icons';
+import {
+  CalendarOutlined,
+  ClockCircleOutlined,
+  EnvironmentOutlined,
+  PhoneOutlined,
+  PlusOutlined
+} from '@ant-design/icons';
 import { useHistory } from 'react-router';
 import VetCard from '../../components/Search/VetCard';
+import moment from 'moment';
 
 const CardContainer = styled.div`
   width: 100%;
@@ -21,6 +28,7 @@ const CardContainer = styled.div`
   border-radius: 5px;
   background-color: #efefef;
   box-shadow: 0 0 8px #ccc;
+  padding: 10px;
 `;
 
 const PetIconsContainer = styled.div`
@@ -73,6 +81,31 @@ const DatepickerContainer = styled.div`
   flex-wrap: wrap;
 `;
 
+const BookingCard = styled.div`
+  width: 95%;
+  max-width: 500px;
+  margin: 10px auto;
+  background-color: #fff;
+  border: 1px solid rgb(221, 221, 221);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 6px 16px;
+`;
+
+const BookingList = styled.ul`
+  padding: 0 10px;
+  list-style: none;
+`;
+
+const BookingItem = styled.li`
+  margin: 40px 0;
+  font-size: 1.1rem;
+`;
+
+const BookingInfo = styled.span`
+  margin-left: 30px;
+`;
+
 const TOMORROW_9_AM = new Date();
 TOMORROW_9_AM.setDate(TOMORROW_9_AM.getDate() + 1);
 TOMORROW_9_AM.setHours(9, 0, 0, 0);
@@ -84,9 +117,10 @@ export default function Bookings(): ReactElement {
 
   const [datetime, setDatetime] = useState<Date | null>(null);
 
-  const [chosenVet, setChosenVet] = useState<number | null>(null);
+  const [chosenVet, setChosenVet] = useState<VetType | null>(null);
   const [clinicId, setClinicId] = useState<string | null>(null);
   const [chosenPet, setChosenPet] = useState<PetType | null>(null);
+  const [isSuccessful, setIsSuccessful] = useState<boolean>(false);
   const { data: searchedVetsData } = useSWR(
     // Search after user selected pet and date
     datetime && chosenPet
@@ -94,9 +128,13 @@ export default function Bookings(): ReactElement {
       : null
   );
 
-  let weekday: number | null = null;
+  let weekday: number | null = null,
+    date,
+    time;
   if (datetime) {
     weekday = new Date(+datetime).getDay();
+    date = moment.unix(+datetime / 1000).format('LL');
+    time = moment.unix(+datetime / 1000).format('LT');
   }
 
   const { Step } = Steps;
@@ -116,7 +154,7 @@ export default function Bookings(): ReactElement {
     const values = {
       datetime: datetime?.getTime(),
       petId: chosenPet?.id as number,
-      vetId: chosenVet as number,
+      vetId: chosenVet?.id as number,
       clinicId: clinicId as string
     };
     await postBooking(values, token as string);
@@ -157,22 +195,9 @@ export default function Bookings(): ReactElement {
       );
     });
 
-  let vets, vetsData;
+  let vets;
   if (searchedVetsData) {
     vets = searchedVetsData.data.vets as VetType[];
-
-    vetsData = vets.map((vet) => (
-      <VetCard
-        handleClick={() => {
-          setChosenVet(vet.id);
-          setClinicId(vet.clinic.id);
-          next();
-        }}
-        vet={vet}
-        weekday={weekday as number}
-        key={vet.id}
-      />
-    ));
   }
 
   let stepContent;
@@ -195,44 +220,96 @@ export default function Bookings(): ReactElement {
     );
   if (current === 1)
     stepContent = (
-      <DatepickerContainer>
-        <DatePicker
-          selected={datetime}
-          onChange={(date) => handleDateChange(date as Date)}
-          timeIntervals={15}
-          showTimeSelect
-          dateFormat="Pp"
-          minDate={TOMORROW_9_AM}
-          placeholderText="Select date"
-          className="ant-input datepicker-input"
-        />
-        <Button
-          size="large"
-          style={{ marginRight: 10 }}
-          onClick={() => next()}
-          disabled={!datetime}
-          loading={datetime !== null && !searchedVetsData}
-        >
-          Next
-        </Button>
-      </DatepickerContainer>
+      <>
+        <Title>
+          <h2 style={{ marginBottom: 0, fontSize: '1.2rem', fontWeight: 600 }}>
+            Select appointment date
+          </h2>
+        </Title>
+        <DatepickerContainer>
+          <DatePicker
+            selected={datetime}
+            onChange={(date) => handleDateChange(date as Date)}
+            timeIntervals={15}
+            showTimeSelect
+            dateFormat="Pp"
+            minDate={TOMORROW_9_AM}
+            placeholderText="Select date"
+            className="ant-input datepicker-input"
+          />
+          <Button
+            size="large"
+            shape="round"
+            type="primary"
+            style={{ marginRight: 10 }}
+            onClick={() => next()}
+            disabled={!datetime}
+            loading={datetime !== null && !searchedVetsData}
+          >
+            Next
+          </Button>
+        </DatepickerContainer>
+      </>
     );
-  if (current === 2) stepContent = vetsData;
+  if (current === 2)
+    stepContent = vets?.map((vet) => (
+      <VetCard
+        vet={vet}
+        weekday={weekday as number}
+        key={vet.id}
+        userSelect={() => {
+          setChosenVet(vet);
+          setClinicId(vet.clinic.id);
+          next();
+        }}
+      />
+    ));
   if (current === 3)
     stepContent = (
-      <Button
-        size="large"
-        onClick={async () => {
-          await confirmBooking();
-          bookingsMutate();
-          push('/');
-        }}
-      >
-        Confirm Booking
-      </Button>
+      <BookingCard>
+        <h2
+          style={{ fontWeight: 600 }}
+        >{`Appointment with Dr. ${chosenVet?.lastName}`}</h2>
+        <BookingList>
+          <BookingItem>
+            <CalendarOutlined />
+            <BookingInfo>{date}</BookingInfo>
+          </BookingItem>
+          <BookingItem>
+            <ClockCircleOutlined />
+            <BookingInfo>{time}</BookingInfo>
+          </BookingItem>
+          <BookingItem>
+            <EnvironmentOutlined />
+            <BookingInfo>{chosenVet?.clinic.address}</BookingInfo>
+          </BookingItem>
+          <BookingItem>
+            <PhoneOutlined />
+            <BookingInfo>{chosenVet?.phone}</BookingInfo>
+          </BookingItem>
+        </BookingList>
+        <Button
+          danger
+          type="primary"
+          size="large"
+          onClick={async () => {
+            await confirmBooking();
+            bookingsMutate();
+            setIsSuccessful(true);
+          }}
+          style={{
+            borderRadius: 8,
+            width: '100%',
+            height: 50,
+            fontWeight: 600
+          }}
+        >
+          Confirm Booking
+        </Button>
+      </BookingCard>
     );
 
-  return (
+  return !isSuccessful ? (
     <Content>
       <h1>Make an appointment</h1>
       <Steps current={current}>
@@ -247,6 +324,19 @@ export default function Bookings(): ReactElement {
           Back
         </Button>
       ) : null}
+    </Content>
+  ) : (
+    <Content>
+      <Result
+        status="success"
+        title="Successfully Booked!"
+        subTitle="You may be contacted by clinic staffs for details of the appointment."
+      />
+      <div style={{ width: '100%', textAlign: 'center' }}>
+        <Button size="large" onClick={() => push('/')}>
+          Back to home
+        </Button>
+      </div>
     </Content>
   );
 }

@@ -4,9 +4,7 @@ import { useHistory } from 'react-router';
 import styled from 'styled-components';
 
 const Button = styled.div`
-  position: absolute;
-  top: 72px;
-  left: 240px;
+  width: 70px;
   font-size: 14px;
   border-radius: 5px;
   background-color: #fff;

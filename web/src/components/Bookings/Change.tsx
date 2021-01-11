@@ -88,9 +88,8 @@ export default function Change({
           <Button
             danger
             type="primary"
-            htmlType="submit"
             size="large"
-            onSubmit={onSubmit}
+            onClick={onSubmit}
             style={{
               borderRadius: 8,
               width: '100%',
