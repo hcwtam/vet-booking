@@ -1,3 +1,4 @@
+import { Button } from 'antd';
 import React, { ReactElement, useEffect } from 'react';
 import { useHistory, useLocation } from 'react-router';
 import styled from 'styled-components';
@@ -63,7 +64,7 @@ export default function Search(): ReactElement {
   };
 
   let vetCards;
-  if (data && data.data.vets) {
+  if (data && data.data.vets.length) {
     vetCards = data.data.vets.map((vet: VetType) => (
       <VetCard
         weekday={weekday}
@@ -72,6 +73,19 @@ export default function Search(): ReactElement {
         handleClick={() => handleClick(vet.id)}
       />
     ));
+  }
+  if (data && data.data.vets.length === 0) {
+    vetCards = (
+      <div style={{ margin: 20, textAlign: 'center' }}>
+        <h3 style={{ marginBottom: 40 }}>
+          No vets are available at the chosen time. Please click "Back" to
+          select another time.
+        </h3>
+        <Button size="large" shape="round" onClick={() => history.push('/')}>
+          Back
+        </Button>
+      </div>
+    );
   }
 
   useEffect(() => {

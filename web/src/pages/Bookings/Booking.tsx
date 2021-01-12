@@ -32,6 +32,8 @@ export default function Booking(): ReactElement {
   const [, setIsCancelVisible] = useState<boolean>(false);
   const [, setShowDeleteOption] = useState<boolean>(false);
 
+  const { Item } = Descriptions;
+
   useEffect(() => {
     if (bookings.length) {
       let data = getBookingDataById(bookings, id);
@@ -44,40 +46,40 @@ export default function Booking(): ReactElement {
     <>
       <Content>
         <Descriptions title="Appointment Details" bordered>
-          <Descriptions.Item label="Date">
+          <Item label="Date">
             <Info>
               {moment
                 .unix(+(bookingData?.startTime as string) / 1000)
                 .format('LL')}
             </Info>
-          </Descriptions.Item>
-          <Descriptions.Item label="Time">
+          </Item>
+          <Item label="Time">
             <Info>
               {moment
                 .unix(+(bookingData?.startTime as string) / 1000)
                 .format('LT')}{' '}
             </Info>
-          </Descriptions.Item>
-          <Descriptions.Item label="Patient">
+          </Item>
+          <Item label="Patient">
             <Info>{petData?.name} </Info>
-          </Descriptions.Item>
-          <Descriptions.Item label="Clinic">
+          </Item>
+          <Item label="Clinic">
             <Info>{bookingData?.clinicName} </Info>
-          </Descriptions.Item>
-          <Descriptions.Item label="Address">
+          </Item>
+          <Item label="Address">
             <Info>{bookingData?.clinicAddress} </Info>
-          </Descriptions.Item>
-          <Descriptions.Item label="Vet">
+          </Item>
+          <Item label="Vet">
             <Info>
               {bookingData?.vetFirstName} {bookingData?.vetLastName}{' '}
             </Info>
-          </Descriptions.Item>
-          <Descriptions.Item label="Email">
+          </Item>
+          <Item label="Email">
             <Info>{bookingData?.email} </Info>
-          </Descriptions.Item>
-          <Descriptions.Item label="Phone">
+          </Item>
+          <Item label="Phone">
             <Info>{bookingData?.phone} </Info>
-          </Descriptions.Item>
+          </Item>
         </Descriptions>
         {+(bookingData?.startTime as string) > +new Date() ? (
           <ButtonGroup>

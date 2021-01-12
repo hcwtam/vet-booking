@@ -38,9 +38,9 @@ export default function GuestBookModal({
     const data = { ...values, vetId: +vetId, datetime: +datetime, animalType };
     const res = await postBooking(data);
     if (res) {
-      setIsSuccessful(true);
       localStorage.setItem('guestEmail', values.email);
       localStorage.setItem('guestPhone', values.phone);
+      setIsSuccessful(true);
     }
   };
 

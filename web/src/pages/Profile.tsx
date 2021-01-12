@@ -1,32 +1,46 @@
+import { Descriptions } from 'antd';
 import React, { ReactElement, useContext, useEffect } from 'react';
 import { useHistory } from 'react-router';
+import styled from 'styled-components';
+import Content from '../components/UI/Content';
 
 import { userContext } from '../store/user';
+
+const Info = styled.div`
+  min-width: 60px;
+`;
 
 export default function Profile(): ReactElement {
   const history = useHistory();
 
   const [data, mutate] = useContext(userContext);
   const { user, clinic } = data;
-  const { email, firstName, lastName, uid, userType, username } = user;
-
+  const { email, firstName, lastName, userType, username } = user;
   const { userMutate, clinicMutate } = mutate;
+
+  const { Item } = Descriptions;
 
   useEffect(() => {
     userMutate();
     if (userType === 'clinic') clinicMutate();
   }, [userType, userMutate, clinicMutate]);
   return (
-    <div>
+    <Content>
       <h1>Profile</h1>
-      <ul>
-        <li>email: {email}</li>
-        <li>first name: {firstName}</li>
-        <li>last name: {lastName}</li>
-        <li>uid: {uid}</li>
-        <li>user type: {userType}</li>
-        <li>username: {username}</li>
-      </ul>
+      <Descriptions title="Your information" bordered>
+        <Item label="Email">
+          <Info>{email}</Info>
+        </Item>
+        <Item label="First name">
+          <Info>{firstName}</Info>
+        </Item>
+        <Item label="Last name">
+          <Info>{lastName}</Info>
+        </Item>
+        <Item label="Username">
+          <Info>{username}</Info>
+        </Item>
+      </Descriptions>
       {userType === 'clinic' ? (
         clinic.name &&
         clinic.address &&
@@ -76,6 +90,6 @@ export default function Profile(): ReactElement {
           </>
         )
       ) : null}
-    </div>
+    </Content>
   );
 }

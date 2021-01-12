@@ -12,7 +12,7 @@ import { Link } from 'react-router-dom';
 const Container = styled.div`
   width: 95%;
   max-width: 500px;
-  margin: 0 auto 30px;
+  margin: 50px auto;
 `;
 
 const Label = styled.label`
@@ -68,7 +68,9 @@ export default function ContinueRegister(): ReactElement {
 
   return (
     <Container>
-      <h1>Create an account to view, change or cancel your bookings</h1>
+      <h1 style={{ marginBottom: 20 }}>
+        Create an account to view, change or cancel your bookings
+      </h1>
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}

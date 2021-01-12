@@ -10,7 +10,6 @@ import { userContext } from '../../store/user';
 import useSWR from 'swr';
 import { PetType, VetType } from '../../types/types';
 import Content from '../../components/UI/Content';
-import { CatIcon, DogIcon, RabbitIcon, TurtleIcon } from '../../assets/Icons';
 import {
   CalendarOutlined,
   ClockCircleOutlined,
@@ -21,6 +20,7 @@ import {
 import { useHistory } from 'react-router';
 import VetCard from '../../components/Search/VetCard';
 import moment from 'moment';
+import { switchIcon } from '../../utils/user';
 
 const CardContainer = styled.div`
   width: 100%;
@@ -163,24 +163,7 @@ export default function Bookings(): ReactElement {
   let petsData;
   if (pets)
     petsData = pets.map((pet) => {
-      let icon;
-      switch (pet.animalType) {
-        case 'cat':
-          icon = <CatIcon />;
-          break;
-        case 'dog':
-          icon = <DogIcon />;
-          break;
-        case 'rabbit':
-          icon = <RabbitIcon />;
-          break;
-        case 'turtle':
-          icon = <TurtleIcon />;
-          break;
-
-        default:
-          break;
-      }
+      const icon = switchIcon(pet.animalType);
       return (
         <PetIcon
           key={pet.id}
@@ -211,7 +194,7 @@ export default function Bookings(): ReactElement {
         </Title>
         <PetIconsContainer>
           {petsData}
-          <PetIcon onClick={() => push('/pets/new')}>
+          <PetIcon onClick={() => push('/newpet')}>
             <h2>New Pet</h2>
             <PlusOutlined style={{ fontSize: '3rem' }} />
           </PetIcon>
@@ -252,18 +235,27 @@ export default function Bookings(): ReactElement {
       </>
     );
   if (current === 2)
-    stepContent = vets?.map((vet) => (
-      <VetCard
-        vet={vet}
-        weekday={weekday as number}
-        key={vet.id}
-        userSelect={() => {
-          setChosenVet(vet);
-          setClinicId(vet.clinic.id);
-          next();
-        }}
-      />
-    ));
+    stepContent =
+      vets && vets.length ? (
+        vets?.map((vet) => (
+          <VetCard
+            vet={vet}
+            weekday={weekday as number}
+            key={vet.id}
+            userSelect={() => {
+              setChosenVet(vet);
+              setClinicId(vet.clinic.id);
+              next();
+            }}
+          />
+        ))
+      ) : (
+        <h3 style={{ margin: 20 }}>
+          No vets are available at the chosen time. Please click "Back" to
+          select another time.
+        </h3>
+      );
+
   if (current === 3)
     stepContent = (
       <BookingCard>
@@ -312,7 +304,7 @@ export default function Bookings(): ReactElement {
   return !isSuccessful ? (
     <Content>
       <h1>Make an appointment</h1>
-      <Steps current={current}>
+      <Steps current={current} style={{ padding: '0 15px' }}>
         <Step title="Select pet" />
         <Step title="Select date" />
         <Step title="Select vet" />

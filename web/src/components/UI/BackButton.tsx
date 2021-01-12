@@ -13,6 +13,7 @@ const Button = styled.div`
   cursor: pointer;
   transition: 0.2s;
   box-shadow: 0 0 2px #bbb;
+  margin-bottom: 40px;
 
   &:hover {
     transform: scale(1.05);

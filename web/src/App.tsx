@@ -21,6 +21,7 @@ import Search from './pages/Search';
 import Detail from './pages/Detail';
 import ContinueRegister from './pages/ContinueRegister';
 import Sidebar from './components/Sidebar/Sidebar';
+import NewPet from './pages/Pets/NewPet';
 
 const Main = styled.div`
   width: 100%;
@@ -50,6 +51,7 @@ function App() {
         <Route path="/profile" component={Profile} />
         <Route path={'/pets/:id'} component={Pet} />
         <Route exact path="/pets" component={Pets} />
+        <Route exact path="/newpet" component={NewPet} />
         <Route path="/settings" component={OwnerSettings} />
         <Route path="/logout" component={Logout} />
         <Route exact path="/" component={Home} />

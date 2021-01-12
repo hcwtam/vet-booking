@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   AddPetForm,
   PetChangeForm,
@@ -6,6 +7,7 @@ import {
   ClinicSettingsData,
   OwnerSettingsData
 } from '../types/forms';
+import { CatIcon, DogIcon, RabbitIcon, TurtleIcon } from '../assets/Icons';
 import axios from './axiosInstance';
 
 export const changeUserInfo = async (
@@ -124,4 +126,19 @@ export const deleteVet = async (id: string, token: string) => {
       console.log(err);
       return null;
     });
+};
+
+export const switchIcon = (animalType: string) => {
+  switch (animalType) {
+    case 'cat':
+      return <CatIcon />;
+    case 'dog':
+      return <DogIcon />;
+    case 'rabbit':
+      return <RabbitIcon />;
+    case 'turtle':
+      return <TurtleIcon />;
+    default:
+      break;
+  }
 };
