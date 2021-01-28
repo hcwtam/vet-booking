@@ -22,6 +22,7 @@ import Detail from './pages/Detail';
 import ContinueRegister from './pages/ContinueRegister';
 import NewPet from './pages/Pets/NewPet';
 import Sidebar from './components/Sidebar/Sidebar';
+import GuestBooking from './components/Bookings/GuestBooking';
 
 const Main = styled.div`
   width: 100%;
@@ -91,7 +92,7 @@ function App() {
         <Route path="/search" component={Search} />
         <Route path="/detail" component={Detail} />
         <Route path="/continue" component={ContinueRegister} />
-        <Route path="/" component={Home} />
+        <Route path="/" component={GuestBooking} />
       </Switch>
       <Footer />
     </Main>

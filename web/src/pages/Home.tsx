@@ -1,15 +1,10 @@
 import React, { ReactElement, useContext, useState } from 'react';
 import styled from 'styled-components';
-import GuestBooking from '../components/Bookings/GuestBooking';
 import { userContext } from '../store/user';
 import { Button, Timeline } from 'antd';
 import BookingCard from '../components/Overview/BookingCard';
 import Content from '../components/UI/Content';
 import { TIMEZONE_IN_MILLISECONDS } from '../constants';
-
-const Container = styled.div`
-  width: 100%;
-`;
 
 const CardContainer = styled.div`
   width: 100%;
@@ -61,7 +56,7 @@ export default function Home(): ReactElement {
       <div>There is no booking.</div>
     );
   }
-  return user.userType ? (
+  return (
     <>
       {bookings.length ? (
         <Content>
@@ -107,9 +102,5 @@ export default function Home(): ReactElement {
         </Content>
       )}
     </>
-  ) : (
-    <Container>
-      <GuestBooking />
-    </Container>
   );
 }

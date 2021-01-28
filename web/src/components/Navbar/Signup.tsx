@@ -47,7 +47,7 @@ export default function Signup({ setModalContent }: Props): ReactElement {
     if (res.userType && res.token) {
       setToken(res.token);
       setUserType(res.userType);
-      history.push('/profile');
+      history.push('/');
     } else {
       setErrorMessage(
         res.error === 401

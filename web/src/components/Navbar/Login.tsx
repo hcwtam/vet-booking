@@ -10,6 +10,7 @@ import { Button } from 'antd';
 import { ModalContentType } from '../../types/types';
 import LinkButton from '../UI/LinkButton';
 import AntError from '../UI/AntError';
+import { userContext } from '../../store/user';
 
 const Label = styled.label`
   font-weight: 600;
@@ -22,6 +23,7 @@ interface Props {
 export default function Login({ setModalContent }: Props): ReactElement {
   const history = useHistory();
   const { setToken, setUserType } = useContext(authContext);
+  const [, { userMutate }] = useContext(userContext);
 
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -40,7 +42,7 @@ export default function Login({ setModalContent }: Props): ReactElement {
     if (res.userType && res.token) {
       setToken(res.token);
       setUserType(res.userType);
-
+      userMutate();
       history.push('/');
     } else {
       setErrorMessage(
