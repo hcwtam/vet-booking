@@ -20,7 +20,8 @@
 </p>
 
 ## Demo Account
-<p align="center">Please feel free to make an account to try out features, or use the account below:</p>
+
+Please feel free to make an account to try out features, or use the account below:
 
 - **Username**: test
   
