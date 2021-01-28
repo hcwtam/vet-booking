@@ -2,7 +2,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/hcwtam/vet-booking/tree/master/web">
-    <img src="assets/../src/assets/showcase.png" alt="Logo" width="500">
+    <img src="web//src/assets/showcase.png" alt="Logo" width="500">
   </a>
 
   <h3 align="center">Vet Booking System</h3>
@@ -21,8 +21,8 @@
 
 ## Demo Account
 <p align="center">Please feel free to make an account to try out features, or use the account below:</p>
-- **Username**: test
-- **Password**: test
+<p>- **Username** : test</p>
+<p>- **Password** : test</p>
 
 
 <!-- CONTACT -->
