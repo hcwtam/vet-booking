@@ -3,7 +3,7 @@ from flask import Blueprint, jsonify, request
 
 from app import db
 from app.helper import token_required
-from app.models import Pet, AnimalType
+from app.models import Pet, AnimalType, PetOwner
 from app.routes.pet.helper import find_pet_type, find_illness
 
 pet_bp = Blueprint('pet_api', __name__, url_prefix='/pet')
@@ -14,6 +14,7 @@ pet_bp = Blueprint('pet_api', __name__, url_prefix='/pet')
 @token_required
 def create_pet(current_user):
     data = request.get_json()
+    pet_owner = PetOwner.query.filter_by(user_id=current_user.uid).first()
 
     animal_type = find_pet_type(data)
 
@@ -22,7 +23,7 @@ def create_pet(current_user):
                   animal_id=animal_type.id,
                   gender=data['gender'],
                   desexed=data['desexed'] == "true",
-                  owner_id=current_user.id)
+                  owner_id=pet_owner.id)
     db.session.add(new_pet)
 
     # search for illness from input and append
@@ -46,7 +47,8 @@ def change_pet_info(current_user, pet_id):
     if not pet:
         return jsonify({'message': 'No such pet found!'})
 
-    if pet.owner_id is not current_user.id:
+    pet_owner = PetOwner.query.filter_by(user_id=current_user.uid).first()
+    if pet.owner_id is not pet_owner.id:
         return jsonify({'message': 'You are not this pet\'s owner.'})
 
     data = request.get_json()
@@ -61,7 +63,8 @@ def change_pet_info(current_user, pet_id):
 @pet_bp.route('', methods=['GET'])
 @token_required
 def get_pets(current_user):
-    pets = Pet.query.filter_by(owner_id=current_user.id).all()
+    pet_owner = PetOwner.query.filter_by(user_id=current_user.uid).first()
+    pets = Pet.query.filter_by(owner_id=pet_owner.id).all()
 
     output = []
 
@@ -93,7 +96,8 @@ def delete_pet(current_user, pet_id):
     if not pet:
         return jsonify({'message': 'No such pet found!'})
 
-    if pet.owner_id is not current_user.id:
+    pet_owner = PetOwner.query.filter_by(user_id=current_user.uid).first()
+    if pet.owner_id is not pet_owner.id:
         return jsonify({'message': 'You are not this pet\'s owner.'})
 
     db.session.delete(pet)

@@ -29,7 +29,8 @@ def create_booking(current_user=None):
     # check if input time is within vet working hours
     start_datetime = datetime.datetime.fromtimestamp(start_time / 1e3)
     weekday = get_weekday(start_datetime)
-    vet_working_hours = VetSchedule.query.filter(VetSchedule.day_of_week == weekday).first()
+    vet_working_hours = VetSchedule.query.filter(
+        VetSchedule.day_of_week == weekday).first()
     if vet_working_hours is None:
         return jsonify({'message': 'Vet is not working on this day'}), 400
 
@@ -52,7 +53,8 @@ def create_booking(current_user=None):
     else:
         pet_owner = PetOwner(phone=data['phone'],
                              email=data['email'])
-        animal_type = AnimalType.query.filter_by(name=data['animalType']).first()
+        animal_type = AnimalType.query.filter_by(
+            name=data['animalType']).first()
         db.session.add(pet_owner)
         db.session.flush()
         db.session.refresh(pet_owner)
@@ -137,7 +139,8 @@ def change_booking_time(_, booking_number):
     # check if input time is within vet working hours
     start_datetime = datetime.datetime.fromtimestamp(start_time / 1e3)
     weekday = get_weekday(start_datetime)
-    vet_working_hours = VetSchedule.query.filter(VetSchedule.day_of_week == weekday).first()
+    vet_working_hours = VetSchedule.query.filter(
+        VetSchedule.day_of_week == weekday).first()
     if vet_working_hours is None:
         return jsonify({'message': 'Vet is not working on this day'}), 400
 
@@ -150,7 +153,8 @@ def change_booking_time(_, booking_number):
     time_slot.start_time = start_time
     time_slot.end_time = end_time
     # trigger time_update field
-    Booking.query.filter_by(booking_number=booking_number).update({'time_slot_id': time_slot.id})
+    Booking.query.filter_by(booking_number=booking_number).update(
+        {'time_slot_id': time_slot.id})
     db.session.commit()
 
     return jsonify({'message': 'Booking time has been updated.'})
@@ -165,7 +169,8 @@ def delete_booking(_, booking_number):
     if not booking:
         return jsonify({'message': 'No such vet found!'})
 
-    db.session.query(TimeSlot).filter(TimeSlot.id == booking.time_slot_id).delete()
+    timeslot = db.session.query(TimeSlot).filter(
+        TimeSlot.id == booking.time_slot_id)
     db.session.delete(booking)
     db.session.commit()
 

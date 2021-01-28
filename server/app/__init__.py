@@ -20,8 +20,8 @@ def create_app():
         from app.routes.vet.vet import vet_bp
         from app.routes.booking.booking import booking_bp
 
-        # Create sql tables for our data models
-        db.create_all()
+        # # Create sql tables for our data models
+        # db.create_all()
 
         # Register Blueprints
         app.register_blueprint(user_bp)

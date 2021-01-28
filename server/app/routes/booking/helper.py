@@ -7,7 +7,8 @@ def get_weekday(date):
     return weekday
 
 
-def check_vet_on_duty(scheduled_time, vet_working_hours):  # scheduled_time in Python datetime
+# scheduled_time in Python datetime
+def check_vet_on_duty(scheduled_time, vet_working_hours):
     vet_start_hour = vet_working_hours.start_time[:2]
     vet_start_minute = vet_working_hours.start_time[3:]
     vet_break_start_hour = vet_working_hours.break_start_time[:2]
@@ -19,14 +20,20 @@ def check_vet_on_duty(scheduled_time, vet_working_hours):  # scheduled_time in P
 
     # compare in minutes
     vet_start_time = int(vet_start_hour) * 60 + int(vet_start_minute)
-    vet_break_start_time = int(vet_break_start_hour) * 60 + int(vet_break_start_minute)
-    vet_break_end_time = int(vet_break_end_hour) * 60 + int(vet_break_end_minute)
+    vet_break_start_time = int(vet_break_start_hour) * \
+        60 + int(vet_break_start_minute)
+    vet_break_end_time = int(vet_break_end_hour) * \
+        60 + int(vet_break_end_minute)
     vet_end_time = int(vet_end_hour) * 60 + int(vet_end_minute)
 
     booking_start_time = scheduled_time.hour * 60 + scheduled_time.minute
     booking_end_time = booking_start_time + 15
 
-    if (vet_start_time <= booking_start_time and vet_break_start_time >= booking_end_time) or \
-            (vet_break_end_time <= booking_start_time and vet_end_time >= booking_end_time):
-        return True
+    if (vet_break_start_time):
+        if (vet_start_time <= booking_start_time and vet_break_start_time >= booking_end_time) or \
+                (vet_break_end_time <= booking_start_time and vet_end_time >= booking_end_time):
+            return True
+    else:
+        if (vet_start_time <= booking_start_time and vet_end_time >= booking_end_time):
+            return True
     return False
