@@ -21,8 +21,10 @@
 
 ## Demo Account
 <p align="center">Please feel free to make an account to try out features, or use the account below:</p>
-  Username: test
-  Password: test
+
+- **Username**: test
+  
+- **Password**: test
 
 
 <!-- CONTACT -->
