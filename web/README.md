@@ -11,7 +11,7 @@
     Front end application of Vet booking system for pet owners.
     <br />
     <br />
-    <a href="https://spca-forms.netlify.app/">View Site</a>
+    <a href="https://vet-booking.netlify.app/">View Site</a>
     ·
     <a href="https://github.com/hcwtam/vet-booking/tree/master/web/issues">Report Bug</a>
     ·

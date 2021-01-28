@@ -11,7 +11,7 @@
     A booking system for making vet appointments. Frontend built with React, Backend with Flask. User may search for available vets by providing appointment date and animal type of the pet, then make appointments effortlessly.
     <br />
     <br />
-    <a href="https://spca-forms.netlify.app/">View Site</a>
+    <a href="https://vet-booking.netlify.app/">View Site</a>
     ·
     <a href="https://github.com/hcwtam/vet-booking/tree/master/web/issues">Report Bug</a>
     ·
@@ -21,8 +21,8 @@
 
 ## Demo Account
 <p align="center">Please feel free to make an account to try out features, or use the account below:</p>
-<p>- ** Username ** : test</p>
-<p>- ** Password ** : test</p>
+  Username: test
+  Password: test
 
 
 <!-- CONTACT -->
