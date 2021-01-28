@@ -1,4 +1,4 @@
-import { Button } from 'antd';
+import { Button, Spin } from 'antd';
 import React, { ReactElement, useEffect } from 'react';
 import { useHistory, useLocation } from 'react-router';
 import styled from 'styled-components';
@@ -100,7 +100,7 @@ export default function Search(): ReactElement {
     <Container>
       <DateTitle>{formatDate}</DateTitle>
       <Title>Available Vets</Title>
-      {vetCards}
+      {data ? vetCards : <Spin size="large" />}
     </Container>
   );
 }

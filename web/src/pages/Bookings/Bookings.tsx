@@ -1,6 +1,6 @@
 import React, { ReactElement, useContext, useState } from 'react';
 import styled from 'styled-components';
-import { Button, Result, Steps } from 'antd';
+import { Button, Result, Spin, Steps } from 'antd';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -240,7 +240,7 @@ export default function Bookings(): ReactElement {
       </>
     );
   if (current === 2)
-    stepContent =
+    stepContent = searchedVetsData ? (
       vets && vets.length ? (
         vets?.map((vet) => (
           <VetCard
@@ -259,7 +259,10 @@ export default function Bookings(): ReactElement {
           No vets are available at the chosen time. Please click "Back" to
           select another time.
         </h3>
-      );
+      )
+    ) : (
+      <Spin />
+    );
 
   if (current === 3)
     stepContent = (
