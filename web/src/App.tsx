@@ -20,8 +20,8 @@ import Footer from './components/Footer';
 import Search from './pages/Search';
 import Detail from './pages/Detail';
 import ContinueRegister from './pages/ContinueRegister';
-import Sidebar from './components/Sidebar/Sidebar';
 import NewPet from './pages/Pets/NewPet';
+import Sidebar from './components/Sidebar/Sidebar';
 
 const Main = styled.div`
   width: 100%;
