@@ -5,6 +5,7 @@ import { userContext } from '../store/user';
 import { Button, Timeline } from 'antd';
 import BookingCard from '../components/Overview/BookingCard';
 import Content from '../components/UI/Content';
+import { TIMEZONE_IN_MILLISECONDS } from '../constants';
 
 const Container = styled.div`
   width: 100%;
@@ -29,15 +30,15 @@ const Title = styled.div`
   padding: 20px;
 `;
 
-const CURRENT_TIME = +new Date();
+const CURRENT_TIME = +new Date() + TIMEZONE_IN_MILLISECONDS;
 
 export default function Home(): ReactElement {
   const [{ user, bookings }] = useContext(userContext);
   const [showUpcoming, setShowUpcoming] = useState<boolean>(true);
 
   let bookingsData;
-  if (bookings.length)
-    bookingsData = bookings
+  if (bookings.length) {
+    const bookingsArray = bookings
       // sort bookings from old to new
       .sort((a, b) => +(a.startTime as string) - +(b.startTime as string))
       // show upcoming bookings if startTime greater than CURRENT_TIME, vice versa
@@ -45,15 +46,21 @@ export default function Home(): ReactElement {
         return showUpcoming
           ? +(el.startTime as string) > CURRENT_TIME
           : +(el.startTime as string) <= CURRENT_TIME;
-      })
-      .map((booking, index) => (
+      });
+
+    bookingsData = bookingsArray.length ? (
+      bookingsArray.map((booking, index) => (
         <Timeline.Item
           key={booking.id}
           color={showUpcoming ? (index === 0 ? 'green' : 'blue') : 'gray'}
         >
           <BookingCard booking={booking} />
         </Timeline.Item>
-      ));
+      ))
+    ) : (
+      <div>There is no booking.</div>
+    );
+  }
   return user.userType ? (
     <>
       {bookings.length ? (
@@ -92,7 +99,12 @@ export default function Home(): ReactElement {
           </CardContainer>
         </Content>
       ) : (
-        <></>
+        <Content>
+          <h3 style={{ marginBottom: 20, fontSize: '1.1rem', fontWeight: 600 }}>
+            Hello, {user.firstName}!
+          </h3>
+          <div> You have no appointments.</div>
+        </Content>
       )}
     </>
   ) : (

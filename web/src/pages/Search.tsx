@@ -4,6 +4,7 @@ import { useHistory, useLocation } from 'react-router';
 import styled from 'styled-components';
 import useSWR from 'swr';
 import VetCard from '../components/Search/VetCard';
+import { TIMEZONE_IN_MILLISECONDS } from '../constants';
 import { VetType } from '../types/types';
 
 const Container = styled.div`
@@ -47,7 +48,9 @@ export default function Search(): ReactElement {
   let formatDate: string | null = null;
   if (datetime) {
     weekday = new Date(+datetime).getDay();
-    formatDate = new Date(+(datetime as string)).toLocaleString();
+    formatDate = new Date(
+      +(datetime as string) + TIMEZONE_IN_MILLISECONDS
+    ).toLocaleString();
     // remove seconds
     formatDate = formatDate.slice(0, formatDate.length - 3);
   }

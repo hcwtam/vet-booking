@@ -3,6 +3,7 @@ import React, { ReactElement, useContext, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import styled from 'styled-components';
+import { TIMEZONE_IN_MILLISECONDS } from '../../constants';
 
 import { authContext } from '../../store/auth';
 import { changeBookingTime } from '../../utils/booking';
@@ -35,18 +36,23 @@ export default function Change({
   bookingsMutate
 }: Prop): ReactElement {
   const { token } = useContext(authContext);
-  const [datetime, setDatetime] = useState<Date>(new Date(time));
+  const [datetime, setDatetime] = useState<Date>(
+    new Date(+time + TIMEZONE_IN_MILLISECONDS)
+  );
   const [isSuccessful, setIsSuccessful] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
 
   const onSubmit = async () => {
     const res = await changeBookingTime(
-      { datetime: datetime.getTime() },
+      { datetime: datetime.getTime() - TIMEZONE_IN_MILLISECONDS },
       id,
       token as string
     );
-    if (res) {
+    if (res.data) {
       setIsSuccessful(true);
       bookingsMutate();
+    } else {
+      setError(true);
     }
   };
 
@@ -85,6 +91,11 @@ export default function Change({
             className="ant-input"
           />
           <br style={{ marginTop: 20 }} />
+          {error ? (
+            <div style={{ color: 'red' }}>
+              Vet is unavailable at this time. Please select a new time.
+            </div>
+          ) : null}
           <Button
             danger
             type="primary"

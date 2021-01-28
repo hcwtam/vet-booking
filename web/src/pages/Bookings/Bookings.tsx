@@ -21,6 +21,7 @@ import { useHistory } from 'react-router';
 import VetCard from '../../components/Search/VetCard';
 import moment from 'moment';
 import { switchIcon } from '../../utils/user';
+import { TIMEZONE_IN_MILLISECONDS } from '../../constants';
 
 const CardContainer = styled.div`
   width: 100%;
@@ -124,7 +125,11 @@ export default function Bookings(): ReactElement {
   const { data: searchedVetsData } = useSWR(
     // Search after user selected pet and date
     datetime && chosenPet
-      ? [`vet/guest?datetime=${+datetime}&animalType=${chosenPet.animalType}`]
+      ? [
+          `vet/guest?datetime=${
+            +datetime - TIMEZONE_IN_MILLISECONDS
+          }&animalType=${chosenPet.animalType}`
+        ]
       : null
   );
 
@@ -152,7 +157,7 @@ export default function Bookings(): ReactElement {
 
   const confirmBooking = async () => {
     const values = {
-      datetime: datetime?.getTime(),
+      datetime: datetime!.getTime() - TIMEZONE_IN_MILLISECONDS,
       petId: chosenPet?.id as number,
       vetId: chosenVet?.id as number,
       clinicId: clinicId as string

@@ -10,6 +10,7 @@ import Content from '../../components/UI/Content';
 import BackButton from '../../components/UI/BackButton';
 import { Button } from 'antd';
 import styled from 'styled-components';
+import { useHistory } from 'react-router';
 
 const Container = styled.div`
   width: 100%;
@@ -43,6 +44,7 @@ const CheckboxGroup = styled.div`
 export default function NewPet(): ReactElement {
   const { token } = useContext(authContext);
   const [, { petsMutate }] = useContext(userContext);
+  const history = useHistory();
 
   const initialValues = {
     name: '',
@@ -63,6 +65,7 @@ export default function NewPet(): ReactElement {
   const onSubmit = async (values: AddPetForm) => {
     await addPet(values, token as string);
     petsMutate();
+    history.push('/pets');
   };
 
   return (

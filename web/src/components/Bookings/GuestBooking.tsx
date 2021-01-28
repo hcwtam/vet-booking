@@ -7,6 +7,7 @@ import styled from 'styled-components';
 
 import backgroundImage from '../../assets/background.jpg';
 import { useHistory } from 'react-router';
+import { TIMEZONE_IN_MILLISECONDS } from '../../constants';
 
 // styles
 const Main = styled.main`
@@ -178,7 +179,10 @@ export default function GuestBooking(): ReactElement {
   let history = useHistory();
 
   const searchVets = () => {
-    let datetimeString = datetime?.getTime().toString() as string;
+    let datetimeString = (
+      datetime!.getTime() - TIMEZONE_IN_MILLISECONDS
+    ).toString() as string;
+
     const correctedDatetime =
       datetimeString.slice(0, datetimeString.length - 4) + '0000';
     history.push(

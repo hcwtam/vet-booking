@@ -14,6 +14,7 @@ import {
 } from '@ant-design/icons';
 import { Button } from 'antd';
 import GuestBookModal from '../components/Bookings/GuestBookModal';
+import { TIMEZONE_IN_MILLISECONDS } from '../constants';
 
 const Container = styled.div`
   margin: 0 auto;
@@ -78,8 +79,9 @@ export default function Detail(): ReactElement {
   // for booking card
   let date, time;
   if (datetime) {
-    date = moment.unix(+datetime / 1000).format('LL');
-    time = moment.unix(+datetime / 1000).format('LT');
+    const adjustedStartTime = +datetime + TIMEZONE_IN_MILLISECONDS;
+    date = moment(adjustedStartTime).format('LL');
+    time = moment(adjustedStartTime).format('LT');
   }
 
   const { data } = useSWR<{ data: { vet: VetType } }>(

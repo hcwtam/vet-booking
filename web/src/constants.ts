@@ -12,3 +12,6 @@ for (let i = 0; i < 7; i++) {
     endTime: '18:00'
   });
 }
+
+export const TIMEZONE_IN_MILLISECONDS =
+  new Date().getTimezoneOffset() * 60 * 1000;

@@ -3,6 +3,7 @@ import moment from 'moment';
 import React, { ReactElement, useContext } from 'react';
 import { useHistory } from 'react-router';
 import styled from 'styled-components';
+import { TIMEZONE_IN_MILLISECONDS } from '../../constants';
 import { userContext } from '../../store/user';
 import { BookingType } from '../../types/types';
 
@@ -69,8 +70,9 @@ export default function BookingCard({ booking }: Props): ReactElement {
   }
   let date, time;
   if (startTime) {
-    date = moment.unix(+startTime / 1000).format('LL');
-    time = moment.unix(+startTime / 1000).format('LT');
+    const adjustedStartTime = +startTime + TIMEZONE_IN_MILLISECONDS;
+    date = moment(adjustedStartTime).format('LL');
+    time = moment(adjustedStartTime).format('LT');
   }
   return (
     <Card onClick={() => history.push(`/bookings/${booking.id}`)}>
@@ -80,7 +82,7 @@ export default function BookingCard({ booking }: Props): ReactElement {
       <Seperation />
       <CardItem>
         Patient:
-        <h2>{pet?.name}</h2>
+        <h2>{pet?.name ? pet?.name : pet?.animalType}</h2>
       </CardItem>
       <Seperation />
       <CardItem>

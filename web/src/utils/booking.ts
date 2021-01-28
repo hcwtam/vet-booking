@@ -30,7 +30,7 @@ export const changeBookingTime = async (
     })
     .catch((err) => {
       console.log(err);
-      return null;
+      return err;
     });
 };
 

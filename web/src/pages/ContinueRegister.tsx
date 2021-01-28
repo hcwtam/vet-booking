@@ -19,13 +19,12 @@ const Label = styled.label`
   font-weight: 600;
 `;
 
-const EMAIL = localStorage.getItem('guestEmail');
-const PHONE = localStorage.getItem('guestPhone');
-
 export default function ContinueRegister(): ReactElement {
   const history = useHistory();
   const { setToken, setUserType } = useContext(authContext);
   const [errorMessage, setErrorMessage] = useState('');
+  const EMAIL = localStorage.getItem('guestEmail');
+  const PHONE = localStorage.getItem('guestPhone');
 
   const initialValues = {
     firstName: '',
@@ -64,7 +63,7 @@ export default function ContinueRegister(): ReactElement {
 
   useEffect(() => {
     if (!EMAIL || !PHONE) history.push('/');
-  }, [history]);
+  }, [history, EMAIL, PHONE]);
 
   return (
     <Container>

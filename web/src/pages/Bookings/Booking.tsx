@@ -7,6 +7,7 @@ import Cancel from '../../components/Bookings/Cancel';
 import Change from '../../components/Bookings/Change';
 import BackButton from '../../components/UI/BackButton';
 import Content from '../../components/UI/Content';
+import { TIMEZONE_IN_MILLISECONDS } from '../../constants';
 import { userContext } from '../../store/user';
 import { BookingType, PetType } from '../../types/types';
 
@@ -48,16 +49,16 @@ export default function Booking(): ReactElement {
         <Descriptions title="Appointment Details" bordered>
           <Item label="Date">
             <Info>
-              {moment
-                .unix(+(bookingData?.startTime as string) / 1000)
-                .format('LL')}
+              {moment(
+                +(bookingData?.startTime as string) + TIMEZONE_IN_MILLISECONDS
+              ).format('LL')}
             </Info>
           </Item>
           <Item label="Time">
             <Info>
-              {moment
-                .unix(+(bookingData?.startTime as string) / 1000)
-                .format('LT')}{' '}
+              {moment(
+                +(bookingData?.startTime as string) + TIMEZONE_IN_MILLISECONDS
+              ).format('LT')}{' '}
             </Info>
           </Item>
           <Item label="Patient">
