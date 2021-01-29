@@ -19,6 +19,10 @@ const Button = styled.div`
     transform: scale(1.05);
     color: #ffa600;
   }
+
+  @media (max-width: 550px) {
+    margin-left: 20px;
+  }
 `;
 
 export default function BackButton(): ReactElement {

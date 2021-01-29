@@ -23,6 +23,7 @@ import ContinueRegister from './pages/ContinueRegister';
 import NewPet from './pages/Pets/NewPet';
 import Sidebar from './components/Sidebar/Sidebar';
 import GuestBooking from './components/Bookings/GuestBooking';
+import SidebarModal from './components/Sidebar/SidebarModal';
 
 const Main = styled.div`
   width: 100%;
@@ -38,6 +39,10 @@ const Page = styled.div`
   padding: 0px 40px;
   width: 100%;
   background-color: #efefef;
+
+  @media (max-width: 750px) {
+    padding: 0;
+  }
 `;
 
 function App() {
@@ -79,6 +84,7 @@ function App() {
         <Content>
           <Sidebar />
           <Page>
+            <SidebarModal />
             <Switch>{appWithUser}</Switch>
           </Page>
         </Content>

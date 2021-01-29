@@ -30,8 +30,19 @@ const CardContainer = styled.div`
   background-color: #efefef;
   box-shadow: 0 0 8px #ccc;
   padding: 10px;
+  overflow-x: hidden;
+
+  @media (max-width: 550px) {
+    padding: 0;
+  }
 `;
 
+const StepTitle = styled.h1`
+  @media (max-width: 750px) {
+    padding: 20px;
+    margin: 0;
+  }
+`;
 const PetIconsContainer = styled.div`
   display: flex;
   width: 100%;
@@ -91,6 +102,15 @@ const BookingCard = styled.div`
   border-radius: 12px;
   padding: 24px;
   box-shadow: rgba(0, 0, 0, 0.12) 0px 6px 16px;
+
+  @media (max-width: 550px) {
+    margin: 0;
+    padding: 30px 20px;
+    width: 100%;
+    border: none;
+    border-radius: 5px;
+    box-shadow: none;
+  }
 `;
 
 const BookingList = styled.ul`
@@ -242,7 +262,7 @@ export default function Bookings(): ReactElement {
   if (current === 2)
     stepContent = searchedVetsData ? (
       vets && vets.length ? (
-        vets?.map((vet) => (
+        vets?.map((vet, index) => (
           <VetCard
             vet={vet}
             weekday={weekday as number}
@@ -252,6 +272,7 @@ export default function Bookings(): ReactElement {
               setClinicId(vet.clinic.id);
               next();
             }}
+            index={index}
           />
         ))
       ) : (
@@ -311,7 +332,7 @@ export default function Bookings(): ReactElement {
 
   return !isSuccessful ? (
     <Content>
-      <h1>Make an appointment</h1>
+      <StepTitle>Make an appointment</StepTitle>
       <Steps current={current} style={{ padding: '0 15px' }}>
         <Step title="Select pet" />
         <Step title="Select date" />
@@ -320,7 +341,11 @@ export default function Bookings(): ReactElement {
       </Steps>
       <CardContainer>{stepContent}</CardContainer>
       {current > 0 ? (
-        <Button size="large" style={{ marginTop: 30 }} onClick={() => back()}>
+        <Button
+          size="large"
+          style={{ marginTop: 30, marginLeft: 10, marginBottom: 10 }}
+          onClick={() => back()}
+        >
           Back
         </Button>
       ) : null}

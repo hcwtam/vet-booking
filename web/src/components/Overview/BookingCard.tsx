@@ -30,6 +30,16 @@ const Card = styled.div`
   }
 `;
 
+const Date = styled.div`
+  color: #666666;
+  line-height: 1.3;
+  h2 {
+    font-size: 1.2rem;
+    color: #000;
+    margin: 0;
+  }
+`;
+
 const CardItem = styled.div`
   color: #666666;
   line-height: 1.3;
@@ -37,6 +47,10 @@ const CardItem = styled.div`
     font-size: 1.2rem;
     color: #000;
     margin: 0;
+  }
+
+  @media (max-width: 750px) {
+    display: none;
   }
 `;
 
@@ -48,15 +62,19 @@ const Icon = styled.div`
   }
 `;
 
+const DateSeperation = styled.div`
+  border-right: 2px solid rgb(221, 221, 221);
+  display: block;
+  width: 2px;
+  height: 48px;
+`;
 const Seperation = styled.div`
   border-right: 2px solid rgb(221, 221, 221);
   display: block;
   width: 2px;
   height: 48px;
-  @media (max-width: 500px) {
-    width: 80%;
-    height: 1px;
-    border-top: 2px solid rgb(221, 221, 221);
+  @media (max-width: 750px) {
+    display: none;
   }
 `;
 
@@ -76,10 +94,10 @@ export default function BookingCard({ booking }: Props): ReactElement {
   }
   return (
     <Card onClick={() => history.push(`/bookings/${booking.id}`)}>
-      <CardItem>
+      <Date>
         <h2>{date}</h2> {time}
-      </CardItem>
-      <Seperation />
+      </Date>
+      <DateSeperation />
       <CardItem>
         Patient:
         <h2>{pet?.name ? pet?.name : pet?.animalType}</h2>

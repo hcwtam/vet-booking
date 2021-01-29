@@ -12,6 +12,14 @@ const Overview = styled.div`
   background-color: #fff;
   padding: 20px 20px 40px;
   box-shadow: 0 0 8px #ccc;
+
+  @media (max-width: 750px) {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 80vh;
+    border-radius: 0;
+  }
 `;
 
 export default function Content({ children }: Props): ReactElement {

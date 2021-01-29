@@ -3,24 +3,36 @@ import {
   HomeOutlined,
   IdcardOutlined,
   InfoCircleOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
   SettingOutlined
 } from '@ant-design/icons';
-import { Menu } from 'antd';
-import React, { ReactElement, useContext } from 'react';
+import { Button, Menu, Modal, Tooltip } from 'antd';
+import React, { ReactElement, useContext, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { authContext } from '../../store/auth';
 
 const ResponsiveContainer = styled.div`
-  width: 300px;
+  display: none;
   @media (max-width: 950px) {
-    display: none;
+    display: block;
+    position: fixed;
+    top: 50vh;
+    right: 10px;
+    z-index: 1000;
   }
 `;
 
-export default function Sidebar(): ReactElement {
+const Title = styled.div`
+  padding: 25px;
+  width: 100%;
+`;
+
+export default function SidebarModal(): ReactElement {
   const { userType } = useContext(authContext);
   const location = useLocation();
+  const [showModal, setShowModal] = useState<boolean>(false);
 
   let menu;
   menu =
@@ -30,6 +42,7 @@ export default function Sidebar(): ReactElement {
         mode="inline"
         defaultSelectedKeys={['/']}
         selectedKeys={[location.pathname]}
+        onClick={() => setShowModal(false)}
       >
         <Menu.Item key="/">
           <InfoCircleOutlined />
@@ -69,5 +82,45 @@ export default function Sidebar(): ReactElement {
       </Menu>
     );
 
-  return <ResponsiveContainer>{menu}</ResponsiveContainer>;
+  return (
+    <>
+      <ResponsiveContainer>
+        <Tooltip title="Open menu" placement="left">
+          <Button
+            shape="circle"
+            onClick={() => setShowModal(true)}
+            style={{
+              background:
+                'linear-gradient(10deg, #ffa55b 10% 30%, #ff895b 50% 100%)',
+              opacity: 0.85,
+              color: '#fff'
+            }}
+            size="large"
+            type="text"
+          >
+            {showModal ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+          </Button>
+        </Tooltip>
+      </ResponsiveContainer>
+      <Modal
+        visible={showModal}
+        bodyStyle={{ margin: 0, height: '100vh', padding: 0 }}
+        style={{
+          padding: 0,
+          margin: 0,
+          top: 0,
+          bottom: 0,
+          left: 0,
+          right: 0
+        }}
+        width={300}
+        maskStyle={{ padding: 0, margin: 0 }}
+        footer={null}
+        onCancel={() => setShowModal(false)}
+      >
+        <Title>Menu</Title>
+        {menu}
+      </Modal>
+    </>
+  );
 }

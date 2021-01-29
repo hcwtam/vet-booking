@@ -28,6 +28,18 @@ const Container = styled.div`
 const Content = styled.article`
   width: 60%;
   margin: 0 30px 30px;
+
+  @media (max-width: 950px) {
+    width: 100%;
+  }
+`;
+
+const Name = styled.h1`
+  font-weight: 600;
+
+  @media (max-width: 950px) {
+    margin-bottom: 0;
+  }
 `;
 
 const VetCard = styled.div`
@@ -37,6 +49,10 @@ const VetCard = styled.div`
   align-items: center;
   border-bottom: 1px solid rgb(221, 221, 221);
   padding: 10px 0;
+
+  @media (max-width: 950px) {
+    padding: 30px 0;
+  }
 `;
 
 const Paragraph = styled.div`
@@ -51,6 +67,22 @@ const BookingCard = styled.div`
   padding: 24px;
   box-shadow: rgba(0, 0, 0, 0.12) 0px 6px 16px;
   margin: 30px;
+  @media (max-width: 950px) {
+    display: none;
+  }
+`;
+
+const MobileBookingCard = styled.div`
+  display: none;
+  position: fixed;
+  bottom: 0;
+  width: 100vw;
+  padding: 40px 20px;
+  background-color: #f5f5f5;
+  border-top: 2px solid #dddddd;
+  @media (max-width: 950px) {
+    display: block;
+  }
 `;
 
 const BookingList = styled.ul`
@@ -95,13 +127,29 @@ export default function Detail(): ReactElement {
     if (!vetId || !datetime || !animalType) history.push('/');
   }, [animalType, datetime, history, vetId]);
 
+  const submitButton = (
+    <Button
+      danger
+      type="primary"
+      size="large"
+      onClick={() => setIsVisible(true)}
+      loading={isVisible}
+      style={{
+        borderRadius: 8,
+        width: '100%',
+        height: 50,
+        fontWeight: 600
+      }}
+    >
+      Book now
+    </Button>
+  );
+
   return (
     <Container>
       <Content>
         <VetCard>
-          <h1
-            style={{ fontWeight: 600 }}
-          >{`Dr. ${vet?.firstName} ${vet?.lastName}`}</h1>
+          <Name>{`Dr. ${vet?.firstName} ${vet?.lastName}`}</Name>
           <Avatar
             icon={<UserOutlined />}
             size={{ xs: 64, sm: 64, md: 64, lg: 64, xl: 64, xxl: 64 }}
@@ -141,21 +189,7 @@ export default function Detail(): ReactElement {
             <BookingInfo>{vet?.phone}</BookingInfo>
           </BookingItem>
         </BookingList>
-        <Button
-          danger
-          type="primary"
-          size="large"
-          onClick={() => setIsVisible(true)}
-          loading={isVisible}
-          style={{
-            borderRadius: 8,
-            width: '100%',
-            height: 50,
-            fontWeight: 600
-          }}
-        >
-          Book now
-        </Button>
+        {submitButton}
       </BookingCard>
       <GuestBookModal
         isVisible={isVisible}
@@ -164,6 +198,7 @@ export default function Detail(): ReactElement {
         datetime={datetime as string}
         animalType={animalType as string}
       />
+      <MobileBookingCard>{submitButton}</MobileBookingCard>
     </Container>
   );
 }

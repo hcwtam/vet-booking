@@ -36,6 +36,10 @@ const DateTitle = styled.h2`
   font-size: 1rem;
   color: #1a1a1a;
   margin: 0;
+
+  @media (max-width: 750px) {
+    margin-left: 20px;
+  }
 `;
 
 export default function Search(): ReactElement {
@@ -68,12 +72,13 @@ export default function Search(): ReactElement {
 
   let vetCards;
   if (data && data.data.vets.length) {
-    vetCards = data.data.vets.map((vet: VetType) => (
+    vetCards = data.data.vets.map((vet: VetType, index: number) => (
       <VetCard
         weekday={weekday}
         vet={vet}
         key={vet.id}
         handleClick={() => handleClick(vet.id)}
+        index={index}
       />
     ));
   }

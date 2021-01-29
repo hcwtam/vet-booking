@@ -12,17 +12,48 @@ const CardContainer = styled.div`
   border-radius: 5px;
   background-color: #efefef;
   box-shadow: 0 0 8px #ccc;
+
+  @media (max-width: 750px) {
+    margin: 20px 0;
+  }
+`;
+
+const NameTitle = styled.h3`
+  margin-bottom: 20px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  @media (max-width: 750px) {
+    padding: 20px;
+    margin: 0;
+  }
+`;
+const Buttons = styled.h3`
+  @media (max-width: 750px) {
+    padding: 0 20px;
+  }
 `;
 
 const TimelineContainer = styled.div`
   width: 100%;
   padding: 40px;
+
+  @media (max-width: 750px) {
+    padding: 40px 30px;
+  }
 `;
 
 const Title = styled.div`
   width: 100%;
   border-bottom: 1px solid #ccc;
   padding: 20px;
+`;
+
+const Span = styled.div`
+  display: inline-block;
+  margin-left: 5px;
+  @media (max-width: 500px) {
+    display: none;
+  }
 `;
 
 const CURRENT_TIME = +new Date() + TIMEZONE_IN_MILLISECONDS;
@@ -60,26 +91,24 @@ export default function Home(): ReactElement {
     <>
       {bookings.length ? (
         <Content>
-          <h3 style={{ marginBottom: 20, fontSize: '1.1rem', fontWeight: 600 }}>
-            Hello, {user.firstName}!
-          </h3>
-          <div>
+          <NameTitle>Hello, {user.firstName}!</NameTitle>
+          <Buttons>
             <Button
               size="large"
               style={{ marginRight: 10 }}
               className={showUpcoming ? 'active' : ''}
               onClick={() => setShowUpcoming(true)}
             >
-              Upcoming Appointments
+              Upcoming <Span>Appointments</Span>
             </Button>
             <Button
               size="large"
               className={showUpcoming ? '' : 'active'}
               onClick={() => setShowUpcoming(false)}
             >
-              Past Appointments
+              Past <Span>Appointments</Span>
             </Button>
-          </div>
+          </Buttons>
           <CardContainer>
             <Title>
               <h2

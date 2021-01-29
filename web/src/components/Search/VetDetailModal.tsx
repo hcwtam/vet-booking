@@ -28,7 +28,9 @@ export default function VetDetailModal({
   return (
     <Modal
       visible={showModal}
-      width={'70vw'}
+      width={'90vw'}
+      bodyStyle={{ height: '70vh', overflowY: 'scroll' }}
+      centered
       title={
         <div
           style={{
@@ -70,7 +72,7 @@ export default function VetDetailModal({
         </Paragraph>
         <div style={{ width: '100%', textAlign: 'center' }}>
           <Button
-            style={{ margin: '0 auto', width: 300 }}
+            style={{ margin: '0 auto', maxWidth: 300, width: '90%' }}
             onClick={userSelect}
             size="large"
             shape="round"
